@@ -1,0 +1,54 @@
+{
+  "cameras": [
+    {
+      "camera_id": "cam-b204-01",
+      "zone_id": "B-204",
+      "name": "B-204 Lab Front Wide",
+      "resolution": [640, 480],
+      "zone_polygon": [[40, 80], [600, 80], [620, 460], [20, 460]],
+      "equipment_rois": [
+        {"id": "B204-LIGHT-01", "type": "LIGHT", "roi": [120, 20, 240, 70], "threshold_lux": 140},
+        {"id": "B204-PC-BANK", "type": "PC", "roi": [80, 220, 560, 420], "screen_thresh": 125, "total_units": 28},
+        {"id": "B204-FAN-02", "type": "FAN", "roi": [300, 40, 380, 110], "motion_thresh": 15.0},
+        {"id": "B204-WINDOW-1", "type": "WINDOW", "roi": [520, 120, 620, 320], "open_thresh": 0.65}
+      ],
+      "default_clip": "b204_vacant_cooling_clip"
+    },
+    {
+      "camera_id": "cam-b207",
+      "zone_id": "B-207",
+      "name": "B-207 Security Lab Overview",
+      "resolution": [640, 480],
+      "zone_polygon": [[30, 60], [610, 60], [630, 450], [30, 450]],
+      "equipment_rois": [
+        {"id": "B207-LIGHT-01", "type": "LIGHT", "roi": [140, 20, 260, 70], "threshold_lux": 130},
+        {"id": "B207-PC-BANK", "type": "PC", "roi": [60, 200, 580, 430], "screen_thresh": 120, "total_units": 24}
+      ],
+      "default_clip": "b207_after_hours_clip"
+    },
+    {
+      "camera_id": "cam-b101",
+      "zone_id": "B-101",
+      "name": "B-101 Computer Lab Main",
+      "resolution": [640, 480],
+      "zone_polygon": [[30, 50], [610, 50], [610, 460], [30, 460]],
+      "equipment_rois": [
+        {"id": "B101-LIGHT-01", "type": "LIGHT", "roi": [100, 20, 250, 70], "threshold_lux": 140},
+        {"id": "B101-PC-BANK", "type": "PC", "roi": [50, 210, 590, 430], "screen_thresh": 120, "total_units": 32}
+      ],
+      "default_clip": "b101_occupied_clip"
+    },
+    {
+      "camera_id": "webcam-live",
+      "zone_id": "B-204",
+      "name": "Live Webcam Stream (Demo)",
+      "resolution": [640, 480],
+      "zone_polygon": [[10, 10], [630, 10], [630, 470], [10, 470]],
+      "equipment_rois": [
+        {"id": "WEBCAM-LIGHT-01", "type": "LIGHT", "roi": [50, 10, 250, 80], "threshold_lux": 120},
+        {"id": "WEBCAM-PC-01", "type": "PC", "roi": [100, 200, 540, 450], "screen_thresh": 110, "total_units": 1}
+      ],
+      "default_clip": "live_webcam"
+    }
+  ]
+}
