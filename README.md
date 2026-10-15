@@ -61,5 +61,33 @@ npm run dev
 
 ---
 
+## 🌐 Deploying Frontend to Vercel
+
+The frontend is a Next.js 16 application located in the `web` directory.
+
+### Method 1: Via Vercel Web Dashboard (Recommended)
+1. Log in to [Vercel](https://vercel.com) and click **"Add New..." > "Project"**.
+2. Import the Git repository: `Sustainable-Energy-Monitoring-AnD-Optimization`.
+3. In the project configuration:
+   - **Framework Preset**: `Next.js`
+   - **Root Directory**: Click **Edit** and select `web`
+4. *(Optional)* Under **Environment Variables**, add:
+   - `NEXT_PUBLIC_API_URL`: URL of your hosted FastAPI backend (e.g., `https://your-backend.onrender.com`). If omitted, PulseGrid uses built-in fallback simulation data.
+5. Click **Deploy**.
+
+### Method 2: Via Vercel CLI
+```bash
+# Navigate to web directory
+cd web
+
+# Deploy preview
+npx vercel
+
+# Deploy production
+npx vercel --prod
+```
+
+---
+
 ## 📄 License
 MIT License.
