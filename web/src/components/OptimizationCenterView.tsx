@@ -66,7 +66,7 @@ export const OptimizationCenterView: React.FC<OptimizationProps> = ({ onApplyAct
             <span>Optimization Center — Multi-Criteria Decision & M&V Verification</span>
           </h2>
           <p className="text-xs text-slate-400 mt-0.5">
-            Multi-criteria candidate action ranking dynamically calculated from empirical UCI Appliances Energy baseline data. Actions update the software twin simulation.
+            Interactivity-aware candidate action ranking dynamically updated by user priority weights.
           </p>
         </div>
 

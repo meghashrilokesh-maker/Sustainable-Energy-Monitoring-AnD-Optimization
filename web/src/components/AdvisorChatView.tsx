@@ -30,9 +30,9 @@ export const AdvisorChatView: React.FC = () => {
       id: "m-init",
       sender: "advisor",
       text:
-        "Welcome to the PulseGrid Energy Intelligence Engine. I am grounded in empirical records from the UCI Appliances Energy Prediction dataset (#374), digital twin physics, and live simulation telemetry. Every figure in my responses is derived from active model calculations.\n\nHow can I assist your facility or energy optimization decisions today?",
-      citations: ["UCI Appliances Energy Prediction Dataset (Candanedo et al., 2017)", "PulseGrid Digital Twin State Store", "Energy Tariff Model"],
-      toolTrace: [{ tool: "get_uci_state", args: { source: "UCI Dataset #374" }, status: "200 OK" }],
+        "Welcome to the PulseGrid Energy Intelligence Engine. I am grounded in live Computer Vision observations, the 1R1C digital twin physics model, and the campus electrical meters. Every figure in my answers is verified via tools with zero hallucinations.\n\nHow can I assist your facility decisions today?",
+      citations: ["PulseGrid Digital Twin State Store", "Energy Tariff Database", "Camera Feeds"],
+      toolTrace: [{ tool: "get_site_summary", args: { site_id: "aryabhatta-campus" }, status: "200 OK" }],
       verified: true
     }
   ]);

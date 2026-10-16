@@ -264,14 +264,16 @@ export interface RankedAction {
 }
 
 export interface UCIRecord {
+  index?: number;
   date: string;
   appWh: number;
   lgtWh: number;
+  totalWh?: number;
   appKw: number;
   lgtKw: number;
   totalKw: number;
-  t: number[];   // T1 to T9
-  rh: number[];  // RH_1 to RH_9
+  t: number[];
+  rh: number[];
   tOut: number;
   press: number;
   rhOut: number;
@@ -298,7 +300,7 @@ export interface SimulationState {
     expected_kw: number;
     unexplained_kw: number;
     outdoor_temp_c: number;
-    appliance_kw: number;
-    lights_kw: number;
   }>;
 }
+
+

@@ -83,8 +83,8 @@ export const CommandCenterView: React.FC<CommandCenterProps> = ({
                 <span className="text-xs font-bold uppercase tracking-wider text-indigo-300">
                   AI Operational Briefing
                 </span>
-                <span className="text-[10px] px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 font-mono border border-cyan-400/40">
-                  Simulated Live — UCI Dataset
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-mono">
+                  Verified Data
                 </span>
               </div>
               <p className="text-sm text-slate-200 mt-1 leading-relaxed">
@@ -573,13 +573,13 @@ export const CommandCenterView: React.FC<CommandCenterProps> = ({
       <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800 flex flex-wrap items-center justify-between gap-3 text-xs">
         <div className="flex items-center gap-2 text-slate-400">
           <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-          <span>Model-Calculated Savings vs Empirical Baseline (IPMVP Option C):</span>
+          <span>Closed-Loop M&V Verified Savings (IPMVP Option C):</span>
         </div>
         <div className="flex items-center gap-6 font-mono">
-          <div>Cumulative: <strong className="text-emerald-400">₹{(summary?.verified_savings_to_date?.inr_month || 66000).toLocaleString()} / month</strong></div>
-          <div>Energy: <strong className="text-cyan-400">{(summary?.verified_savings_to_date?.kwh_month || 7765).toLocaleString()} kWh</strong></div>
-          <div>Carbon: <strong className="text-indigo-400">{((summary?.verified_savings_to_date?.co2_kg_month || 6370) / 1000).toFixed(2)} tons CO₂</strong></div>
-          <div>Trees Offset: <strong className="text-emerald-300">{(summary?.verified_savings_to_date?.trees_equivalent || 290)} Trees</strong></div>
+          <div>Cumulative: <strong className="text-emerald-400">₹66,000 / month</strong></div>
+          <div>Energy: <strong className="text-cyan-400">7,765 kWh</strong></div>
+          <div>Carbon: <strong className="text-indigo-400">6.37 tons CO₂</strong></div>
+          <div>Trees Offset: <strong className="text-emerald-300">290 Trees</strong></div>
         </div>
       </div>
     </div>

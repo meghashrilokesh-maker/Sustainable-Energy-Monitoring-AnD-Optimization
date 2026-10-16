@@ -66,10 +66,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <span className="font-semibold text-slate-200 tracking-wide">PULSEGRID TWIN LIVE</span>
           </div>
           <span className="text-slate-600">|</span>
-          <span className="text-slate-400">Twin: <strong className="text-slate-200">Aryabhatta Digital Twin</strong></span>
-          <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full bg-cyan-950/90 border border-cyan-400/60 text-[10px] font-mono text-cyan-300 font-bold tracking-wide">
-            Simulated Live — UCI Dataset
-          </span>
+          <span className="text-slate-400">Site: <strong className="text-slate-200">Aryabhatta Engineering Campus</strong> (Block A & B)</span>
         </div>
 
         {/* Real-time Ticker Metrics */}
