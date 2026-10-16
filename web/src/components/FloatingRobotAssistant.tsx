@@ -41,7 +41,7 @@ export const FloatingRobotAssistant: React.FC<FloatingRobotAssistantProps> = ({
       id: "m-init",
       sender: "advisor",
       text:
-        "Welcome to PULSEGRID AI Advisor. I am directly connected to the campus 1R1C digital twin physics model, Computer Vision occupancy feeds, and electrical meters.\n\nAll figures are strictly verified via live tool execution. How can I assist your energy decisions today?",
+        "Hi there! I'm your PULSEGRID AI Advisor! I'm directly connected to the campus 1R1C digital twin physics model, Computer Vision occupancy feeds, and electrical meters.\n\nAll numbers are strictly verified via live tool execution. How can I assist your energy decisions today?",
       citations: ["Digital Twin Physics Engine", "Energy Tariff Database", "Vision Occupancy Feed"],
       toolTrace: [{ tool: "get_site_summary", args: { site_id: "aryabhatta-campus" }, status: "200 OK" }],
       verified: true
@@ -139,19 +139,19 @@ export const FloatingRobotAssistant: React.FC<FloatingRobotAssistantProps> = ({
         <aside
           role="dialog"
           aria-label="PULSEGRID AI Advisor Panel"
-          className="fixed bottom-28 right-4 sm:right-6 z-50 w-[calc(100vw-2rem)] sm:w-[440px] max-w-[460px] h-[590px] max-h-[calc(100vh-8.5rem)] flex flex-col rounded-2xl border border-red-500/30 bg-[#090e1a]/95 backdrop-blur-xl shadow-2xl shadow-red-950/40 overflow-hidden transition-all duration-300 animate-in fade-in zoom-in-95"
+          className="fixed bottom-32 right-4 sm:right-6 z-50 w-[calc(100vw-2rem)] sm:w-[440px] max-w-[460px] h-[590px] max-h-[calc(100vh-9.5rem)] flex flex-col rounded-2xl border border-purple-500/40 bg-[#0c0a1a]/95 backdrop-blur-xl shadow-2xl shadow-purple-950/50 overflow-hidden transition-all duration-300 animate-in fade-in zoom-in-95"
         >
           {/* Header */}
-          <div className="flex items-center justify-between px-4 py-3 border-b border-slate-800 bg-slate-900/70 backdrop-blur-sm">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-purple-900/40 bg-purple-950/40 backdrop-blur-sm">
             <div className="flex items-center gap-2.5">
-              <div className="relative flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-red-600/25 to-red-950/40 border border-red-500/50 text-red-400">
-                <MiniRobotIcon className="w-5 h-5 text-red-400" />
+              <div className="relative flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-purple-600/30 to-purple-900/40 border border-purple-500/50 text-purple-300">
+                <MiniCuteRobotIcon className="w-5 h-5 text-purple-300" />
                 <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-emerald-400 ring-2 ring-slate-900" />
               </div>
               <div>
                 <div className="flex items-center gap-1.5">
                   <h3 className="text-xs font-bold text-slate-100 tracking-wide uppercase">PULSEGRID AI Advisor</h3>
-                  <span className="px-1.5 py-0.2 rounded text-[9px] font-mono bg-red-950/70 border border-red-500/40 text-red-300">
+                  <span className="px-1.5 py-0.2 rounded text-[9px] font-mono bg-purple-950/80 border border-purple-500/40 text-purple-200">
                     Live Twin
                   </span>
                 </div>
@@ -167,7 +167,7 @@ export const FloatingRobotAssistant: React.FC<FloatingRobotAssistantProps> = ({
                 type="button"
                 onClick={onClose}
                 aria-label="Minimize AI Advisor"
-                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition"
+                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-purple-950/50 transition"
               >
                 <Minus className="w-4 h-4" />
               </button>
@@ -175,7 +175,7 @@ export const FloatingRobotAssistant: React.FC<FloatingRobotAssistantProps> = ({
                 type="button"
                 onClick={onClose}
                 aria-label="Close AI Advisor"
-                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition"
+                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-purple-950/50 transition"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -183,10 +183,10 @@ export const FloatingRobotAssistant: React.FC<FloatingRobotAssistantProps> = ({
           </div>
 
           {/* Preset Questions Bar */}
-          <div className="px-3 py-2 border-b border-slate-800/80 bg-slate-950/40 overflow-x-auto">
+          <div className="px-3 py-2 border-b border-purple-900/30 bg-purple-950/20 overflow-x-auto">
             <div className="flex items-center gap-1.5 whitespace-nowrap">
               <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider shrink-0 flex items-center gap-1">
-                <Sparkles className="w-3 h-3 text-red-400" />
+                <Sparkles className="w-3 h-3 text-purple-400" />
                 <span>Presets:</span>
               </span>
               {predefinedQuestions.map((q, i) => (
@@ -195,7 +195,7 @@ export const FloatingRobotAssistant: React.FC<FloatingRobotAssistantProps> = ({
                   type="button"
                   disabled={loading}
                   onClick={() => handleSend(q)}
-                  className="text-[11px] px-2.5 py-1 rounded-full bg-slate-900/90 hover:bg-slate-800 border border-slate-800 hover:border-red-500/40 text-slate-300 hover:text-red-200 transition shrink-0 disabled:opacity-50"
+                  className="text-[11px] px-2.5 py-1 rounded-full bg-purple-950/60 hover:bg-purple-900/70 border border-purple-800/60 hover:border-purple-500/60 text-slate-200 hover:text-purple-100 transition shrink-0 disabled:opacity-50"
                 >
                   {q}
                 </button>
@@ -213,15 +213,15 @@ export const FloatingRobotAssistant: React.FC<FloatingRobotAssistantProps> = ({
                 <div
                   className={`max-w-[88%] rounded-xl p-3 text-xs leading-relaxed ${
                     msg.sender === "user"
-                      ? "bg-gradient-to-r from-red-600 to-red-700 text-white font-medium shadow-md shadow-red-950/40"
-                      : "bg-slate-900/90 border border-slate-800/90 text-slate-200 shadow-sm"
+                      ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-medium shadow-md shadow-purple-950/40"
+                      : "bg-slate-900/90 border border-purple-900/40 text-slate-200 shadow-sm"
                   }`}
                 >
                   {msg.sender === "advisor" && (
                     <div className="flex items-center justify-between pb-1.5 mb-1.5 border-b border-slate-800 text-[10px]">
-                      <div className="flex items-center gap-1.5 text-red-400 font-semibold">
+                      <div className="flex items-center gap-1.5 text-purple-300 font-semibold">
                         <Cpu className="w-3 h-3" />
-                        <span>PULSEGRID AI</span>
+                        <span>PULSEGRID AI Companion</span>
                       </div>
                       {msg.verified && (
                         <span className="text-emerald-400 font-mono text-[9px] flex items-center gap-1">
@@ -249,7 +249,7 @@ export const FloatingRobotAssistant: React.FC<FloatingRobotAssistantProps> = ({
                           return (
                             <span
                               key={i}
-                              className="text-[9px] px-1.5 py-0.5 rounded bg-slate-950 border border-slate-800 text-red-300 font-mono"
+                              className="text-[9px] px-1.5 py-0.5 rounded bg-purple-950/60 border border-purple-800 text-purple-200 font-mono"
                             >
                               {citeText}
                             </span>
@@ -265,7 +265,7 @@ export const FloatingRobotAssistant: React.FC<FloatingRobotAssistantProps> = ({
                       <button
                         type="button"
                         onClick={() => setExpandedTrace(expandedTrace === msg.id ? null : msg.id)}
-                        className="text-[9px] text-red-300 hover:text-red-200 flex items-center gap-1"
+                        className="text-[9px] text-purple-300 hover:text-purple-200 flex items-center gap-1"
                       >
                         <span>{expandedTrace === msg.id ? "Hide Tool Calls" : "Inspect Tool Execution Trace"}</span>
                         {expandedTrace === msg.id ? <ChevronUp className="w-2.5 h-2.5" /> : <ChevronDown className="w-2.5 h-2.5" />}
@@ -288,13 +288,13 @@ export const FloatingRobotAssistant: React.FC<FloatingRobotAssistantProps> = ({
             ))}
 
             {loading && (
-              <div className="flex items-center gap-2 p-2.5 rounded-lg bg-slate-900/60 border border-slate-800 text-xs text-slate-400 italic">
-                <Sparkles className="w-3.5 h-3.5 text-red-400 animate-spin" />
-                <span>Querying twin physics and running forward simulation...</span>
+              <div className="flex items-center gap-2 p-2.5 rounded-lg bg-purple-950/40 border border-purple-800/40 text-xs text-purple-200 italic">
+                <Sparkles className="w-3.5 h-3.5 text-purple-400 animate-spin" />
+                <span>Analyzing building physics and computing scenario results...</span>
               </div>
             )}
 
-            {/* Recoverable Error Banner with Retry */}
+            {/* Error Banner with Retry */}
             {errorMessage && (
               <div className="p-3 rounded-xl bg-rose-950/40 border border-rose-800/70 text-rose-200 text-xs flex flex-col gap-2 shadow-lg">
                 <div className="flex items-start gap-2">
@@ -324,7 +324,7 @@ export const FloatingRobotAssistant: React.FC<FloatingRobotAssistantProps> = ({
           {/* Chat Input Form */}
           <form
             onSubmit={handleFormSubmit}
-            className="p-3 border-t border-slate-800 bg-slate-900/70 flex items-center gap-2"
+            className="p-3 border-t border-purple-900/40 bg-purple-950/30 flex items-center gap-2"
           >
             <input
               ref={inputRef}
@@ -339,13 +339,13 @@ export const FloatingRobotAssistant: React.FC<FloatingRobotAssistantProps> = ({
               }}
               disabled={loading}
               placeholder="Ask anything about campus energy, anomalies, or simulations..."
-              className="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-red-500 font-sans disabled:opacity-60"
+              className="flex-1 bg-slate-950 border border-purple-900/50 rounded-xl px-3.5 py-2 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-purple-400 font-sans disabled:opacity-60"
             />
             <button
               type="submit"
               disabled={loading || !inputQuery.trim()}
               aria-label="Send Message"
-              className="px-3.5 py-2 rounded-xl bg-red-600 hover:bg-red-500 disabled:opacity-50 text-white font-semibold text-xs transition flex items-center gap-1.5 shadow-md shadow-red-950/40"
+              className="px-3.5 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 disabled:opacity-50 text-white font-semibold text-xs transition flex items-center gap-1.5 shadow-md shadow-purple-950/40"
             >
               <Send className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Send</span>
@@ -354,19 +354,19 @@ export const FloatingRobotAssistant: React.FC<FloatingRobotAssistantProps> = ({
         </aside>
       )}
 
-      {/* Floating Full-Body Robot Trigger Button */}
-      <div className="fixed bottom-5 right-5 sm:right-6 z-40 flex flex-col items-center group">
+      {/* Floating Cute Robot Trigger — NO ENCLOSING BOX / CARD / BORDER */}
+      <div className="group fixed bottom-6 right-6 sm:right-8 z-40 flex flex-col items-center">
         {/* Hover / Focus Tooltip */}
         <div
           role="tooltip"
-          className="absolute bottom-full mb-3 px-3 py-1.5 rounded-lg bg-slate-900/95 border border-red-500/50 text-red-300 text-xs font-medium shadow-2xl whitespace-nowrap opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-200 pointer-events-none flex items-center gap-1.5 z-50"
+          className="absolute bottom-full mb-3 px-3 py-1.5 rounded-lg bg-slate-950/90 border border-purple-500/40 text-purple-200 text-xs font-medium shadow-xl whitespace-nowrap opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-200 pointer-events-none flex items-center gap-1.5 z-50 backdrop-blur-sm"
         >
-          <Sparkles className="w-3.5 h-3.5 text-red-400" />
+          <Sparkles className="w-3.5 h-3.5 text-purple-400" />
           <span>Ask PulseGrid AI</span>
-          <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-slate-900" />
+          <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-slate-950" />
         </div>
 
-        {/* Full-Body Robot Interactive Trigger */}
+        {/* The Cute Robot itself IS the clickable element — completely free of any enclosing card/box/border background */}
         <button
           type="button"
           onClick={onToggle}
@@ -378,235 +378,198 @@ export const FloatingRobotAssistant: React.FC<FloatingRobotAssistantProps> = ({
           }}
           aria-label={isOpen ? "Close PulseGrid AI Advisor" : "Open PulseGrid AI Advisor"}
           aria-expanded={isOpen}
-          className={`relative flex flex-col items-center justify-center p-2 rounded-2xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 focus:ring-offset-slate-900 cursor-pointer ${
-            isOpen
-              ? "bg-gradient-to-b from-[#220a0a]/90 via-[#140606]/95 to-[#0b0303]/95 border-2 border-red-500 shadow-[0_0_25px_rgba(239,68,68,0.55)] scale-105"
-              : "bg-gradient-to-b from-[#180808]/80 via-[#0e0404]/80 to-[#070202]/90 border border-red-500/40 hover:border-red-400 shadow-[0_0_20px_rgba(239,68,68,0.35)] hover:shadow-[0_0_30px_rgba(239,68,68,0.6)] animate-bot-float"
-          }`}
+          className="relative bg-transparent border-0 p-0 m-0 shadow-none outline-none focus:outline-none cursor-pointer select-none"
         >
-          {/* Full-Body Robot Artwork */}
-          <FullBodyRobotAvatar
-            className="w-16 h-22 sm:w-18 sm:h-24 drop-shadow-[0_0_12px_rgba(239,68,68,0.45)]"
-            isOpen={isOpen}
-          />
-
-          {/* Online Pulsing Indicator Dot */}
-          <span className="absolute top-1.5 right-1.5 flex h-2.5 w-2.5">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
-            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500 border border-slate-900" />
-          </span>
-
-          {/* AI Advisor Label */}
-          <span className="mt-1 px-2.5 py-0.5 rounded-full text-[9.5px] font-mono font-bold tracking-wider uppercase bg-red-950/90 border border-red-500/50 text-red-200 group-hover:text-white group-hover:border-red-400 transition shadow-sm">
-            AI Advisor
-          </span>
+          {/* Animated jumping cute robot */}
+          <div className={`transition-transform duration-300 group-hover:scale-115 ${isOpen ? "scale-105" : "animate-cute-jump"}`}>
+            <CutePurpleRobotAvatar
+              className="w-20 h-26 sm:w-24 sm:h-30 drop-shadow-[0_0_20px_rgba(192,132,252,0.6)] transition-all"
+              isOpen={isOpen}
+            />
+          </div>
         </button>
       </div>
     </>
   );
 };
 
-// Full-Body Red Themed Futuristic Robot SVG
-const FullBodyRobotAvatar: React.FC<{ className?: string; isOpen?: boolean }> = ({ 
-  className = "w-16 h-24", 
+// Cute Full-Body Purple Robot Character SVG
+const CutePurpleRobotAvatar: React.FC<{ className?: string; isOpen?: boolean }> = ({ 
+  className = "w-20 h-26", 
   isOpen = false 
 }) => {
   return (
     <svg
-      viewBox="0 0 68 96"
+      viewBox="0 0 76 96"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
       aria-hidden="true"
     >
       <defs>
-        {/* Head armor gradient */}
-        <linearGradient id="headArmorRed" x1="20" y1="12" x2="48" y2="38" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#27272a" />
-          <stop offset="0.6" stopColor="#18181b" />
-          <stop offset="1" stopColor="#09090b" />
+        {/* Cute Head Gradient */}
+        <linearGradient id="cuteHeadGrad" x1="15" y1="18" x2="61" y2="54" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#4c1d95" />
+          <stop offset="0.5" stopColor="#3b0764" />
+          <stop offset="1" stopColor="#1e1b4b" />
         </linearGradient>
 
-        {/* Chestplate armor gradient */}
-        <linearGradient id="chestPlateRed" x1="18" y1="40" x2="50" y2="65" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#27272a" />
-          <stop offset="0.5" stopColor="#18181b" />
-          <stop offset="1" stopColor="#0a0a0c" />
+        {/* Cute Chubby Body Gradient */}
+        <linearGradient id="cuteBodyGrad" x1="23" y1="54" x2="53" y2="77" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#581c87" />
+          <stop offset="0.6" stopColor="#3b0764" />
+          <stop offset="1" stopColor="#1e1b4b" />
         </linearGradient>
 
-        {/* Red glowing core radial gradient */}
-        <radialGradient id="redCoreGlow" cx="50%" cy="50%" r="50%">
-          <stop stopColor="#fca5a5" offset="0%" />
-          <stop stopColor="#ef4444" offset="50%" />
-          <stop stopColor="#991b1b" offset="100%" />
+        {/* Purple/Violet Glow Radial for Core & Eyes */}
+        <radialGradient id="purpleEyeGlow" cx="50%" cy="50%" r="50%">
+          <stop stopColor="#f5d0fe" offset="0%" />
+          <stop stopColor="#d8b4fe" offset="50%" />
+          <stop stopColor="#a855f7" offset="100%" />
         </radialGradient>
 
-        {/* Red thruster plume gradient */}
-        <linearGradient id="thrusterPlumeRed" x1="0" y1="0" x2="0" y2="1">
-          <stop stopColor="#ef4444" stopOpacity="0.95" offset="0%" />
-          <stop stopColor="#dc2626" stopOpacity="0.45" offset="60%" />
-          <stop stopColor="#991b1b" stopOpacity="0" offset="100%" />
-        </linearGradient>
-
-        {/* Red Neon Glow Filter */}
-        <filter id="redNeonGlow" x="-20%" y="-20%" width="140%" height="140%">
-          <feGaussianBlur stdDeviation="1.8" result="blur" />
+        {/* Purple Drop Shadow Filter */}
+        <filter id="purpleNeonFilter" x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur stdDeviation="2" result="blur" />
           <feComposite in="SourceGraphic" in2="blur" operator="over" />
         </filter>
       </defs>
 
-      {/* ANTENNA & TRANSMITTER */}
-      <line x1="34" y1="12" x2="34" y2="5" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" />
-      <circle cx="34" cy="4.5" r="3" fill="#f87171" className="animate-red-core-pulse" filter="url(#redNeonGlow)" />
-      <circle cx="34" cy="4.5" r="1.2" fill="#ffffff" />
+      {/* ANTENNA WITH CUTE BOUNCY STAR/ORB */}
+      <line x1="38" y1="18" x2="38" y2="9" stroke="#c084fc" strokeWidth="2.5" strokeLinecap="round" />
+      <circle cx="38" cy="7.5" r="4.5" fill="#e9d5ff" filter="url(#purpleNeonFilter)" />
+      <circle cx="38" cy="7.5" r="2" fill="#ffffff" />
 
-      {/* HEAD SECTION */}
-      {/* Ear Audio Receivers (L & R) */}
-      <rect x="17" y="19" width="3.5" height="11" rx="1.75" fill="#7f1d1d" stroke="#ef4444" strokeWidth="0.8" />
-      <rect x="47.5" y="19" width="3.5" height="11" rx="1.75" fill="#7f1d1d" stroke="#ef4444" strokeWidth="0.8" />
+      {/* HEAD SECTION — CUTE & ROUNDED */}
+      {/* Ear Headphone Cushions (Left & Right) */}
+      <rect x="10" y="27" width="5.5" height="17" rx="2.75" fill="#581c87" stroke="#c084fc" strokeWidth="1.5" />
+      <circle cx="12.75" cy="35.5" r="2" fill="#e9d5ff" />
 
-      {/* Helmet Outer Shell (Dark metallic with red stroke) */}
+      <rect x="60.5" y="27" width="5.5" height="17" rx="2.75" fill="#581c87" stroke="#c084fc" strokeWidth="1.5" />
+      <circle cx="63.25" cy="35.5" r="2" fill="#e9d5ff" />
+
+      {/* Main Rounded Helmet */}
+      <rect
+        x="15"
+        y="18"
+        width="46"
+        height="36"
+        rx="18"
+        fill="url(#cuteHeadGrad)"
+        stroke="#a855f7"
+        strokeWidth="2"
+      />
+
+      {/* Shiny Headlight Top Arc */}
+      <path d="M25 22C29 20 47 20 51 22" stroke="#d8b4fe" strokeWidth="1.5" strokeLinecap="round" opacity="0.6" />
+
+      {/* Cute Deep Curved Visor Screen */}
       <rect
         x="20"
-        y="12"
-        width="28"
-        height="25"
-        rx="8"
-        fill="url(#headArmorRed)"
-        stroke="#dc2626"
+        y="24"
+        width="36"
+        height="23"
+        rx="11.5"
+        fill="#090514"
+        stroke="#7e22ce"
         strokeWidth="1.5"
       />
 
-      {/* Forehead Sensor Ridge / Crown */}
-      <path d="M25 15H43" stroke="#ef4444" strokeWidth="1" strokeLinecap="round" opacity="0.8" />
-      <circle cx="34" cy="15" r="1.5" fill="#ef4444" />
+      {/* EXPRESSIVE GLOWING VIOLET EYES (Blinking Animation) */}
+      <g className="animate-cute-blink">
+        {/* Left Eye */}
+        <ellipse cx="29" cy="34" rx="4.5" ry="6" fill="url(#purpleEyeGlow)" filter="url(#purpleNeonFilter)" />
+        {/* Left Eye Highlights */}
+        <circle cx="27.5" cy="32" r="2" fill="#ffffff" />
+        <circle cx="30.5" cy="36" r="1" fill="#ffffff" />
 
-      {/* Dark Visor Screen */}
-      <rect
-        x="23.5"
-        y="18"
-        width="21"
-        height="13.5"
-        rx="4"
-        fill="#050508"
-        stroke="#991b1b"
-        strokeWidth="1"
-      />
-
-      {/* Glowing Red Eyes (with blinking animation) */}
-      <g className="animate-eye-blink">
-        <rect x="26.5" y="21.5" width="4.5" height="5.5" rx="2" fill="#ef4444" filter="url(#redNeonGlow)" />
-        <rect x="37" y="21.5" width="4.5" height="5.5" rx="2" fill="#ef4444" filter="url(#redNeonGlow)" />
-        <circle cx="28" cy="23" r="1" fill="#ffffff" />
-        <circle cx="38.5" cy="23" r="1" fill="#ffffff" />
+        {/* Right Eye */}
+        <ellipse cx="47" cy="34" rx="4.5" ry="6" fill="url(#purpleEyeGlow)" filter="url(#purpleNeonFilter)" />
+        {/* Right Eye Highlights */}
+        <circle cx="45.5" cy="32" r="2" fill="#ffffff" />
+        <circle cx="48.5" cy="36" r="1" fill="#ffffff" />
       </g>
 
-      {/* Friendly Mouth Arc / Live Wave */}
+      {/* CUTE BLUSHING CHEEKS */}
+      <ellipse cx="23" cy="40" rx="3.5" ry="1.8" fill="#f472b6" opacity="0.65" />
+      <ellipse cx="53" cy="40" rx="3.5" ry="1.8" fill="#f472b6" opacity="0.65" />
+
+      {/* CUTE SMILING MOUTH */}
       {isOpen ? (
-        <path d="M28.5 28.5C30.5 30.5 37.5 30.5 39.5 28.5" stroke="#f87171" strokeWidth="1.4" strokeLinecap="round" />
+        <path d="M35 40.5 Q38 44.5 41 40.5 Z" fill="#e9d5ff" stroke="#c084fc" strokeWidth="1" />
       ) : (
-        <line x1="29" y1="28.5" x2="39" y2="28.5" stroke="#ef4444" strokeWidth="1.2" strokeLinecap="round" opacity="0.85" />
+        <path d="M35 40 Q38 43 41 40" stroke="#e9d5ff" strokeWidth="1.6" strokeLinecap="round" fill="none" />
       )}
 
-      {/* NECK JOINT */}
-      <rect x="29.5" y="36.5" width="9" height="4" rx="1.5" fill="#27272a" stroke="#71717a" strokeWidth="0.8" />
-      <line x1="31" y1="38.5" x2="37" y2="38.5" stroke="#ef4444" strokeWidth="0.8" strokeLinecap="round" />
+      {/* TINY NECK COLLAR */}
+      <rect x="33.5" y="52" width="9" height="3" rx="1.5" fill="#581c87" stroke="#c084fc" strokeWidth="1" />
 
-      {/* TORSO & CHESTPLATE */}
-      <path
-        d="M19 43C19 41.5 20.5 40 22.5 40H45.5C47.5 40 49 41.5 49 43L47.5 62C47.5 63.5 46 65 44 65H24C22 65 20.5 63.5 20.5 62L19 43Z"
-        fill="url(#chestPlateRed)"
-        stroke="#dc2626"
-        strokeWidth="1.5"
+      {/* CHUBBY ROUNDED TORSO */}
+      <rect
+        x="23"
+        y="54"
+        width="30"
+        height="23"
+        rx="11.5"
+        fill="url(#cuteBodyGrad)"
+        stroke="#a855f7"
+        strokeWidth="2"
       />
 
-      {/* Chest Armor Inset Lines */}
-      <path d="M22 45L28 51M46 45L40 51" stroke="#ef4444" strokeWidth="1" strokeLinecap="round" opacity="0.6" />
+      {/* CHEST ENERGY SYMBOL (Glowing Purple Core) */}
+      <circle cx="38" cy="64.5" r="5.5" fill="#2e1065" stroke="#c084fc" strokeWidth="1.2" />
+      <circle cx="38" cy="64.5" r="3.5" fill="#e9d5ff" className="animate-purple-core" filter="url(#purpleNeonFilter)" />
+      {/* Tiny energy spark inside */}
+      <path d="M38 62V67M35.5 64.5H40.5" stroke="#7e22ce" strokeWidth="1" strokeLinecap="round" />
 
-      {/* CHEST ENERGY INDICATOR (Arc Reactor Core) */}
-      <circle cx="34" cy="51.5" r="6.5" fill="#18181b" stroke="#dc2626" strokeWidth="1.2" />
-      <circle cx="34" cy="51.5" r="4" fill="url(#redCoreGlow)" className="animate-red-core-pulse" filter="url(#redNeonGlow)" />
-      {/* Energy core cross motif */}
-      <path d="M34 49V54M32 51.5H36" stroke="#ffffff" strokeWidth="1" strokeLinecap="round" opacity="0.9" />
-
-      {/* SHOULDER JOINTS */}
-      {/* Left Shoulder */}
-      <circle cx="16.5" cy="43.5" r="4" fill="#18181b" stroke="#ef4444" strokeWidth="1" />
-      <circle cx="16.5" cy="43.5" r="1.5" fill="#dc2626" />
-
-      {/* Right Shoulder */}
-      <circle cx="51.5" cy="43.5" r="4" fill="#18181b" stroke="#ef4444" strokeWidth="1" />
-      <circle cx="51.5" cy="43.5" r="1.5" fill="#dc2626" />
-
-      {/* ARMS & HANDS */}
-      {/* Left Arm */}
+      {/* CUTE ROUNDED ARMS */}
+      {/* Left Arm (Resting cutely) */}
       <path
-        d="M15 47L12.5 56C12 57.5 12.5 59 13.5 60L14 62"
-        stroke="#27272a"
+        d="M23 58 C16 62 16 68 20 71"
+        stroke="#a855f7"
         strokeWidth="3.5"
-        strokeLinecap="round"
-      />
-      <path
-        d="M15 47L12.5 56C12 57.5 12.5 59 13.5 60L14 62"
-        stroke="#ef4444"
-        strokeWidth="1"
         strokeLinecap="round"
         fill="none"
       />
-      <rect x="11.5" y="61" width="5" height="5.5" rx="2" fill="#18181b" stroke="#ef4444" strokeWidth="1" />
+      <circle cx="20" cy="71" r="2.8" fill="#c084fc" />
 
-      {/* Right Arm */}
+      {/* Right Arm (Waving cheerfully!) */}
       <path
-        d="M53 47L55.5 56C56 57.5 55.5 59 54.5 60L54 62"
-        stroke="#27272a"
+        d="M53 58 C60 56 63 50 62 44"
+        stroke="#a855f7"
         strokeWidth="3.5"
-        strokeLinecap="round"
-      />
-      <path
-        d="M53 47L55.5 56C56 57.5 55.5 59 54.5 60L54 62"
-        stroke="#ef4444"
-        strokeWidth="1"
         strokeLinecap="round"
         fill="none"
       />
-      <rect x="51.5" y="61" width="5" height="5.5" rx="2" fill="#18181b" stroke="#ef4444" strokeWidth="1" />
+      <circle cx="62" cy="44" r="3" fill="#e9d5ff" filter="url(#purpleNeonFilter)" />
+      {/* Tiny wave sparkles near hand */}
+      <path d="M66 41 C67.5 42.5 67.5 45 66 46" stroke="#c084fc" strokeWidth="1.2" strokeLinecap="round" fill="none" />
 
-      {/* PELVIS / WAIST BELT */}
-      <rect x="23" y="64" width="22" height="4.5" rx="2" fill="#18181b" stroke="#7f1d1d" strokeWidth="1" />
-      <circle cx="34" cy="66.2" r="1.5" fill="#ef4444" />
-
-      {/* LEGS & FEET / THRUSTER NOZZLES */}
+      {/* CUTE LITTLE LEGS & FEET */}
       {/* Left Leg */}
-      <rect x="24" y="68.5" width="6.5" height="9" rx="2.5" fill="#18181b" stroke="#dc2626" strokeWidth="1" />
-      <circle cx="27.2" cy="77.5" r="2.2" fill="#27272a" stroke="#ef4444" strokeWidth="0.8" />
-      <path d="M23 80H31.5L30 85.5C29.7 86.5 28.8 87 27.5 87H27C25.7 87 24.8 86.5 24.5 85.5L23 80Z" fill="#18181b" stroke="#ef4444" strokeWidth="1" />
+      <rect x="27.5" y="74.5" width="7" height="9" rx="3.5" fill="#581c87" stroke="#a855f7" strokeWidth="1.5" />
+      <rect x="25.5" y="81.5" width="10.5" height="4.5" rx="2.25" fill="#c084fc" filter="url(#purpleNeonFilter)" />
 
       {/* Right Leg */}
-      <rect x="37.5" y="68.5" width="6.5" height="9" rx="2.5" fill="#18181b" stroke="#dc2626" strokeWidth="1" />
-      <circle cx="40.8" cy="77.5" r="2.2" fill="#27272a" stroke="#ef4444" strokeWidth="0.8" />
-      <path d="M36.5 80H45L43.5 85.5C43.2 86.5 42.3 87 41 87H40.5C39.2 87 38.3 86.5 38 85.5L36.5 80Z" fill="#18181b" stroke="#ef4444" strokeWidth="1" />
+      <rect x="41.5" y="74.5" width="7" height="9" rx="3.5" fill="#581c87" stroke="#a855f7" strokeWidth="1.5" />
+      <rect x="39.5" y="81.5" width="10.5" height="4.5" rx="2.25" fill="#c084fc" filter="url(#purpleNeonFilter)" />
 
-      {/* THRUSTER HOVER PLUMES */}
-      <g className="animate-red-thruster">
-        <ellipse cx="27.2" cy="89" rx="3.5" ry="3" fill="url(#thrusterPlumeRed)" />
-        <ellipse cx="40.8" cy="89" rx="3.5" ry="3" fill="url(#thrusterPlumeRed)" />
-        <circle cx="27.2" cy="87.5" r="1.5" fill="#fca5a5" />
-        <circle cx="40.8" cy="87.5" r="1.5" fill="#fca5a5" />
-      </g>
+      {/* SOFT PURPLE HOVER GLOW SHADOW */}
+      <ellipse cx="38" cy="90" rx="14" ry="2.5" fill="rgba(192, 132, 252, 0.4)" filter="url(#purpleNeonFilter)" />
     </svg>
   );
 };
 
-// Simplified Mini Icon for Header
-const MiniRobotIcon: React.FC<{ className?: string }> = ({ className = "w-4 h-4" }) => {
+// Simplified Mini Cute Icon for Chat Header
+const MiniCuteRobotIcon: React.FC<{ className?: string }> = ({ className = "w-4 h-4" }) => {
   return (
     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} aria-hidden="true">
       <path d="M12 2V4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
       <circle cx="12" cy="2" r="1.5" fill="currentColor" />
-      <rect x="4" y="4" width="16" height="15" rx="4" stroke="currentColor" strokeWidth="1.8" />
+      <rect x="4" y="4" width="16" height="15" rx="6" stroke="currentColor" strokeWidth="1.8" />
       <circle cx="9" cy="11" r="1.8" fill="currentColor" />
       <circle cx="15" cy="11" r="1.8" fill="currentColor" />
-      <path d="M9 15C10.5 16.5 13.5 16.5 15 15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M10 15C11 16 13 16 14 15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
     </svg>
   );
 };

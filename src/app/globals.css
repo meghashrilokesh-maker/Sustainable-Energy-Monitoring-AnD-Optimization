@@ -86,27 +86,63 @@ body {
   }
 }
 
-/* Red Theme Full-Body Robot Animations */
-@keyframes redCorePulse {
+/* Cute Purple Robot Animations */
+@keyframes cuteRobotJump {
   0%, 100% {
-    opacity: 0.8;
-    filter: drop-shadow(0 0 4px #ef4444);
+    transform: translateY(0px) scale(1, 1);
+  }
+  15% {
+    transform: translateY(3px) scale(1.08, 0.92);
+  }
+  38% {
+    transform: translateY(-22px) scale(0.92, 1.08);
   }
   50% {
-    opacity: 1;
-    filter: drop-shadow(0 0 12px #f87171);
+    transform: translateY(-26px) scale(1, 1);
+  }
+  68% {
+    transform: translateY(-6px) scale(0.96, 1.04);
+  }
+  80% {
+    transform: translateY(2px) scale(1.06, 0.94);
+  }
+  90% {
+    transform: translateY(-3px) scale(0.99, 1.01);
   }
 }
 
-@keyframes redThrusterGlow {
+@keyframes purpleCoreGlow {
   0%, 100% {
-    transform: scale(0.92);
-    opacity: 0.65;
+    opacity: 0.75;
+    filter: drop-shadow(0 0 3px #a855f7);
   }
   50% {
-    transform: scale(1.15);
     opacity: 1;
+    filter: drop-shadow(0 0 10px #c084fc);
   }
+}
+
+@keyframes cuteEyeBlink {
+  0%, 90%, 100% {
+    transform: scaleY(1);
+  }
+  95% {
+    transform: scaleY(0.12);
+  }
+}
+
+.animate-cute-jump {
+  animation: cuteRobotJump 2.8s cubic-bezier(0.28, 0.84, 0.42, 1) infinite;
+  transform-origin: bottom center;
+}
+
+.animate-purple-core {
+  animation: purpleCoreGlow 2.2s ease-in-out infinite;
+}
+
+.animate-cute-blink {
+  transform-origin: center;
+  animation: cuteEyeBlink 3.6s ease-in-out infinite;
 }
 
 .animate-bot-float {
@@ -122,21 +158,13 @@ body {
   animation: antennaPulse 2s ease-in-out infinite;
 }
 
-.animate-red-core-pulse {
-  animation: redCorePulse 2.4s ease-in-out infinite;
-}
-
-.animate-red-thruster {
-  animation: redThrusterGlow 1.8s ease-in-out infinite;
-  transform-origin: center;
-}
-
 @media (prefers-reduced-motion: reduce) {
+  .animate-cute-jump,
+  .animate-purple-core,
+  .animate-cute-blink,
   .animate-bot-float,
   .animate-eye-blink,
-  .animate-antenna-pulse,
-  .animate-red-core-pulse,
-  .animate-red-thruster {
+  .animate-antenna-pulse {
     animation: none !important;
     transform: none !important;
   }
