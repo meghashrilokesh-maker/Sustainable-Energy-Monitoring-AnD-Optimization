@@ -286,7 +286,7 @@ export const OptimizationCenterView: React.FC<OptimizationProps> = ({ onApplyAct
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-5 gap-3 text-xs">
-          <div className="p-2.5 rounded bg-slate-900 border border-slate-800 space-y-1.5">
+          <div className="p-2.5 rounded bg-slate-900 border border-slate-800 space-y-1.5 info-card-glow">
             <div className="flex justify-between text-slate-300">
               <span>Financial Savings:</span>
               <span className="font-mono text-cyan-400 font-bold">{(weights.cost * 100).toFixed(0)}%</span>
@@ -306,7 +306,7 @@ export const OptimizationCenterView: React.FC<OptimizationProps> = ({ onApplyAct
             />
           </div>
 
-          <div className="p-2.5 rounded bg-slate-900 border border-slate-800 space-y-1.5">
+          <div className="p-2.5 rounded bg-slate-900 border border-slate-800 space-y-1.5 info-card-glow">
             <div className="flex justify-between text-slate-300">
               <span>Carbon Abatement:</span>
               <span className="font-mono text-indigo-400 font-bold">{(weights.carbon * 100).toFixed(0)}%</span>
@@ -326,7 +326,7 @@ export const OptimizationCenterView: React.FC<OptimizationProps> = ({ onApplyAct
             />
           </div>
 
-          <div className="p-2.5 rounded bg-slate-900 border border-slate-800 space-y-1.5">
+          <div className="p-2.5 rounded bg-slate-900 border border-slate-800 space-y-1.5 info-card-glow">
             <div className="flex justify-between text-slate-300">
               <span>Comfort Protection:</span>
               <span className="font-mono text-emerald-400 font-bold">{(weights.comfort * 100).toFixed(0)}%</span>
@@ -346,7 +346,7 @@ export const OptimizationCenterView: React.FC<OptimizationProps> = ({ onApplyAct
             />
           </div>
 
-          <div className="p-2.5 rounded bg-slate-900 border border-slate-800 space-y-1.5">
+          <div className="p-2.5 rounded bg-slate-900 border border-slate-800 space-y-1.5 info-card-glow">
             <div className="flex justify-between text-slate-300">
               <span>Ease of Execution:</span>
               <span className="font-mono text-yellow-400 font-bold">{(weights.ease * 100).toFixed(0)}%</span>
@@ -366,7 +366,7 @@ export const OptimizationCenterView: React.FC<OptimizationProps> = ({ onApplyAct
             />
           </div>
 
-          <div className="p-2.5 rounded bg-slate-900 border border-slate-800 space-y-1.5">
+          <div className="p-2.5 rounded bg-slate-900 border border-slate-800 space-y-1.5 info-card-glow">
             <div className="flex justify-between text-slate-300">
               <span>Payback Speed / ROI:</span>
               <span className="font-mono text-rose-400 font-bold">{(weights.roi * 100).toFixed(0)}%</span>
@@ -400,7 +400,7 @@ export const OptimizationCenterView: React.FC<OptimizationProps> = ({ onApplyAct
             return (
               <div 
                 key={act.id}
-                className={`p-3.5 rounded-xl border flex flex-col justify-between transition-all ${
+                className={`p-3.5 rounded-xl border flex flex-col justify-between transition-all info-card-glow ${
                   isApplied
                     ? "bg-slate-900/90 border-emerald-500/50 shadow-md shadow-emerald-500/10"
                     : "bg-slate-950/70 border-slate-800 hover:border-slate-700"

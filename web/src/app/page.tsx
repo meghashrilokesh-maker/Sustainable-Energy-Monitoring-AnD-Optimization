@@ -175,6 +175,10 @@ export default function PulseGridApp() {
           />
         )}
 
+        {activeTab === "advisor" && (
+          <AdvisorChatView />
+        )}
+
         {activeTab === "optimization" && (
           <OptimizationCenterView
             onApplyAction={handleApplyAction}

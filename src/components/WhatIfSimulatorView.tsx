@@ -454,7 +454,7 @@ export const WhatIfSimulatorView: React.FC<SimulatorProps> = ({ onAskAI }) => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* CONTROL 1: AC Cooling Setpoint */}
-          <div className="p-4 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-cyan-800/60 transition flex flex-col justify-between space-y-3">
+          <div className="p-4 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-cyan-800/60 transition flex flex-col justify-between space-y-3 info-card-glow">
             <div>
               <div className="flex items-center justify-between mb-1">
                 <span className="text-xs font-bold text-slate-200 flex items-center gap-1.5">
@@ -508,7 +508,7 @@ export const WhatIfSimulatorView: React.FC<SimulatorProps> = ({ onAskAI }) => {
           </div>
 
           {/* CONTROL 2: Rooftop Solar PV Array */}
-          <div className="p-4 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-yellow-800/60 transition flex flex-col justify-between space-y-3">
+          <div className="p-4 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-yellow-800/60 transition flex flex-col justify-between space-y-3 info-card-glow">
             <div>
               <div className="flex items-center justify-between mb-1">
                 <span className="text-xs font-bold text-slate-200 flex items-center gap-1.5">
@@ -558,7 +558,7 @@ export const WhatIfSimulatorView: React.FC<SimulatorProps> = ({ onAskAI }) => {
           </div>
 
           {/* CONTROL 3: Vision Occupancy Setback */}
-          <div className="p-4 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-emerald-800/60 transition flex flex-col justify-between space-y-3">
+          <div className="p-4 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-emerald-800/60 transition flex flex-col justify-between space-y-3 info-card-glow">
             <div>
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs font-bold text-slate-200 flex items-center gap-1.5">
@@ -604,7 +604,7 @@ export const WhatIfSimulatorView: React.FC<SimulatorProps> = ({ onAskAI }) => {
           </div>
 
           {/* CONTROL 4: Workstation Sleep */}
-          <div className="p-4 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-purple-800/60 transition flex flex-col justify-between space-y-3">
+          <div className="p-4 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-purple-800/60 transition flex flex-col justify-between space-y-3 info-card-glow">
             <div>
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs font-bold text-slate-200 flex items-center gap-1.5">

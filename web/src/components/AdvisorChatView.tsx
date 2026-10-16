@@ -27,8 +27,8 @@ export const AdvisorChatView: React.FC = () => {
       id: "m-init",
       sender: "advisor",
       text:
-        "Welcome to the PulseGrid Energy Intelligence Engine. I am grounded in live Computer Vision observations, the 1R1C digital twin physics model, and the campus electrical meters. Every figure in my answers is verified via tools with zero hallucinations.\n\nHow can I assist your facility decisions today?",
-      citations: ["PulseGrid Digital Twin State Store", "Energy Tariff Database", "Camera Feeds"],
+        "Welcome to the WattWise Energy Intelligence Engine. I am grounded in live Computer Vision observations, the 1R1C digital twin physics model, and the campus electrical meters. Every figure in my answers is verified via tools with zero hallucinations.\n\nHow can I assist your facility decisions today?",
+      citations: ["WattWise Digital Twin State Store", "Energy Tariff Database", "Camera Feeds"],
       toolTrace: [{ tool: "get_site_summary", args: { site_id: "aryabhatta-campus" }, status: "200 OK" }],
       verified: true
     }
@@ -156,7 +156,7 @@ export const AdvisorChatView: React.FC = () => {
                 <div className="flex items-center justify-between pb-2 mb-2 border-b border-slate-800 text-[11px]">
                   <div className="flex items-center gap-1.5 text-cyan-400 font-bold">
                     <Cpu className="w-3.5 h-3.5" />
-                    <span>PulseGrid Advisor</span>
+                    <span>WattWise Advisor</span>
                   </div>
                   {msg.verified && (
                     <span className="text-emerald-400 font-mono text-[10px] flex items-center gap-1">

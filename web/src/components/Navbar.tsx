@@ -47,6 +47,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     { id: "analytics", label: "Analytics & Forecast", icon: TrendingUp },
     { id: "anomalies", label: "Anomaly Center", icon: AlertTriangle },
     { id: "simulator", label: "What-If Simulator", icon: Sliders },
+    { id: "advisor", label: "AI Advisor", icon: Sparkles },
     { id: "optimization", label: "Optimization Center", icon: Award },
     { id: "reports", label: "Reports", icon: FileText }
   ];
@@ -61,12 +62,32 @@ export const Navbar: React.FC<NavbarProps> = ({
       {/* Top Banner Ticker */}
       <div className="flex flex-wrap items-center justify-between px-4 py-2 border-b border-slate-800/80 text-xs">
         <div className="flex items-center gap-3">
+          {/* WattWise Brand Logo & Name */}
           <div className="flex items-center gap-2">
-            <span className="relative flex h-2.5 w-2.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+            <div className="relative flex items-center justify-center w-7 h-7 rounded-lg bg-gradient-to-br from-cyan-500/20 via-slate-900 to-emerald-500/20 border border-cyan-400/50 shadow-sm shadow-cyan-500/20 shrink-0">
+              <svg 
+                className="w-4 h-4 text-cyan-400" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="2" 
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+              >
+                <path d="M9 18h6" />
+                <path d="M10 22h4" />
+                <path d="M12 2a7 7 0 0 0-4.95 11.95c.95.95 1.95 2.05 1.95 4.05h6c0-2 1-3.1 1.95-4.05A7 7 0 0 0 12 2z" />
+                <path d="M12 6c1.2 1.2 1.2 2.8 0 4-1.2-1.2-1.2-2.8 0-4z" fill="rgba(52, 211, 153, 0.45)" className="stroke-emerald-400" />
+                <path d="M12 8.5v3" className="stroke-cyan-300" />
+              </svg>
+              <span className="absolute -top-0.5 -right-0.5 flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+            </div>
+            <span className="font-extrabold text-sm tracking-wide bg-gradient-to-r from-cyan-300 via-sky-100 to-emerald-300 bg-clip-text text-transparent font-sans">
+              WattWise
             </span>
-            <span className="font-semibold text-slate-200 tracking-wide">PULSEGRID TWIN LIVE</span>
           </div>
           <span className="text-slate-600">|</span>
           <span className="text-slate-400">Site: <strong className="text-slate-200">Aryabhatta Engineering Campus</strong> (Block A & B)</span>
@@ -109,12 +130,22 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="flex items-center gap-1">
           {tabs.map((tab) => {
             const Icon = tab.icon;
-            const isActive = activeTab === tab.id;
+            const isAdvisorTab = tab.id === "advisor";
+            const isActive = isAdvisorTab
+              ? Boolean(isAdvisorOpen || activeTab === "advisor")
+              : activeTab === tab.id;
+
+            const handleTabClick = () => {
+              setActiveTab(tab.id);
+              if (isAdvisorTab && onOpenAdvisor) {
+                onOpenAdvisor();
+              }
+            };
 
             return (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
+                onClick={handleTabClick}
                 className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium transition-all whitespace-nowrap ${
                   isActive
                     ? "bg-gradient-to-r from-cyan-500/20 to-blue-600/20 text-cyan-300 border border-cyan-500/40 shadow-sm shadow-cyan-500/20"
