@@ -72,7 +72,7 @@ export const CommandCenterView: React.FC<CommandCenterProps> = ({
   return (
     <div className="space-y-5 p-4 max-w-7xl mx-auto">
       {/* Row 0: AI Morning Briefing Bar */}
-      <div className="relative overflow-hidden rounded-xl border border-indigo-500/30 bg-gradient-to-r from-indigo-950/60 via-slate-900/90 to-slate-900/90 p-4 shadow-lg backdrop-blur-md">
+      <div className="relative overflow-hidden rounded-xl border border-indigo-500/30 bg-gradient-to-r from-indigo-950/60 via-slate-900/90 to-slate-900/90 p-4 shadow-lg backdrop-blur-md info-card-glow">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
           <div className="flex items-start gap-3">
             <div className="p-2 rounded-lg bg-indigo-500/20 text-indigo-400 mt-0.5">
@@ -570,7 +570,7 @@ export const CommandCenterView: React.FC<CommandCenterProps> = ({
       </div>
 
       {/* Row 6: Closed-Loop Verified Savings Impact Ticker */}
-      <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800 flex flex-wrap items-center justify-between gap-3 text-xs">
+      <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800 flex flex-wrap items-center justify-between gap-3 text-xs info-card-glow">
         <div className="flex items-center gap-2 text-slate-400">
           <CheckCircle2 className="w-4 h-4 text-emerald-400" />
           <span>Closed-Loop M&V Verified Savings (IPMVP Option C):</span>

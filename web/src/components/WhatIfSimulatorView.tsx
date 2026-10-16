@@ -156,7 +156,7 @@ export const WhatIfSimulatorView: React.FC<SimulatorProps> = ({ onAskAI }) => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
           {/* Setpoint Slider */}
-          <div className="p-3 rounded-lg bg-slate-900 border border-slate-800 space-y-2">
+          <div className="p-3 rounded-lg bg-slate-900 border border-slate-800 space-y-2 info-card-glow">
             <div className="flex justify-between">
               <span className="text-slate-300 font-medium">AC Cooling Setpoint:</span>
               <span className="font-mono font-bold text-cyan-400">{setpoint}°C</span>
@@ -174,7 +174,7 @@ export const WhatIfSimulatorView: React.FC<SimulatorProps> = ({ onAskAI }) => {
           </div>
 
           {/* Solar Rooftop Slider */}
-          <div className="p-3 rounded-lg bg-slate-900 border border-slate-800 space-y-2">
+          <div className="p-3 rounded-lg bg-slate-900 border border-slate-800 space-y-2 info-card-glow">
             <div className="flex justify-between">
               <span className="text-slate-300 font-medium">Rooftop Solar PV Array:</span>
               <span className="font-mono font-bold text-yellow-400">{solarKwp} kWp</span>
@@ -192,7 +192,7 @@ export const WhatIfSimulatorView: React.FC<SimulatorProps> = ({ onAskAI }) => {
           </div>
 
           {/* Occupancy HVAC Toggle */}
-          <div className="p-3 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-between">
+          <div className="p-3 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-between info-card-glow">
             <div>
               <span className="text-slate-200 font-semibold block">Vision Occupancy Setback</span>
               <span className="text-[10px] text-slate-400">28°C after 10 min vacancy</span>
@@ -208,7 +208,7 @@ export const WhatIfSimulatorView: React.FC<SimulatorProps> = ({ onAskAI }) => {
           </div>
 
           {/* IT Automation Toggle */}
-          <div className="p-3 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-between">
+          <div className="p-3 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-between info-card-glow">
             <div>
               <span className="text-slate-200 font-semibold block">Workstation Sleep</span>
               <span className="text-[10px] text-slate-400">Deep standby on vacancy</span>

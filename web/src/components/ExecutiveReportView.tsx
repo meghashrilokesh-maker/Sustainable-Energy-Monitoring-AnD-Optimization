@@ -62,13 +62,13 @@ export const ExecutiveReportView: React.FC = () => {
       </div>
 
       {/* Printable Report Document Sheet */}
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-8 space-y-6 text-slate-200 shadow-2xl print:bg-white print:text-black print:border-none print:shadow-none print:p-0">
+      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-8 space-y-6 text-slate-200 shadow-2xl info-card-glow print:bg-white print:text-black print:border-none print:shadow-none print:p-0">
         {/* Document Header */}
         <div className="flex items-start justify-between border-b border-slate-800 pb-5">
           <div>
             <div className="flex items-center gap-2 text-indigo-400 font-mono text-xs uppercase tracking-widest font-bold">
               <Sparkles className="w-4 h-4" />
-              <span>PULSEGRID DIGITAL TWIN AUDIT LEDGER</span>
+              <span>WATTWISE DIGITAL TWIN AUDIT LEDGER</span>
             </div>
             <h1 className="text-2xl font-black text-white mt-1">
               Campus Energy & Sustainability Audit Report
@@ -171,7 +171,7 @@ export const ExecutiveReportView: React.FC = () => {
               <span className="font-semibold text-slate-200">
                 Verified Energy & Carbon Abatement Achieved Post-Action
               </span>
-              <span className="font-mono text-emerald-400 font-bold">Audited by PulseGrid</span>
+              <span className="font-mono text-emerald-400 font-bold">Audited by WattWise</span>
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs font-mono pt-2 border-t border-emerald-900/40">

@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "PulseGrid — Vision-Grounded Energy Digital Twin",
+  title: "WattWise — Sustainable Energy Monitoring and Optimization",
   description: "The building's energy, seen, understood, simulated and fixed.",
 };
 
