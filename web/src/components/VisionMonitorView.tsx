@@ -46,6 +46,19 @@ export const VisionMonitorView: React.FC<VisionMonitorProps> = ({ onNavigateAnom
 
   const handleClipChange = async (clipId: string) => {
     setSelectedClip(clipId);
+
+    const clipCameraMap: Record<string, string> = {
+      b204_vacant_cooling_clip: "cam-b204-01",
+      b101_occupied_clip: "cam-b101",
+      b207_after_hours_clip: "cam-b207",
+      live_webcam: "cam-b204-01"
+    };
+
+    const targetCamera = clipCameraMap[clipId];
+    if (targetCamera) {
+      setActiveCamera(targetCamera);
+    }
+
     if (clipId === "live_webcam") {
       setUseWebcam(true);
       startWebcam();
@@ -54,7 +67,7 @@ export const VisionMonitorView: React.FC<VisionMonitorProps> = ({ onNavigateAnom
       stopWebcam();
     }
     await selectVisionClip(clipId);
-    loadFeed();
+    loadFeed(targetCamera || activeCamera);
   };
 
   const startWebcam = async () => {
@@ -227,45 +240,45 @@ export const VisionMonitorView: React.FC<VisionMonitorProps> = ({ onNavigateAnom
           </div>
 
           {/* Quick Clip Selector Tray */}
-          <div className="mt-3 pt-3 border-t border-slate-800 flex flex-wrap items-center justify-between gap-2 text-xs">
-            <span className="text-slate-400 font-medium">Replay Test Scenario:</span>
+          <div className="mt-3 pt-3 border-t border-slate-800 flex flex-wrap items-center justify-between gap-2.5 text-xs">
+            <span className="text-slate-300 font-semibold">Replay Test Scenario:</span>
             <div className="flex flex-wrap gap-2">
               <button
                 onClick={() => handleClipChange("b204_vacant_cooling_clip")}
-                className={`px-2.5 py-1 rounded text-xs transition ${
+                className={`px-3 py-1.5 rounded-lg text-xs transition cursor-pointer ${
                   selectedClip === "b204_vacant_cooling_clip"
-                    ? "bg-rose-900/60 border border-rose-500 text-rose-200 font-semibold"
-                    : "bg-slate-900 border border-slate-800 text-slate-400 hover:text-slate-200"
+                    ? "bg-rose-950/90 border border-rose-500 text-rose-200 font-bold shadow-sm shadow-rose-500/30"
+                    : "bg-slate-900/90 border border-slate-800 text-slate-300 hover:text-white hover:bg-slate-800 hover:border-slate-700 font-medium"
                 }`}
               >
                 Clip 1: B-204 Vacant (AC ON)
               </button>
               <button
                 onClick={() => handleClipChange("b101_occupied_clip")}
-                className={`px-2.5 py-1 rounded text-xs transition ${
+                className={`px-3 py-1.5 rounded-lg text-xs transition cursor-pointer ${
                   selectedClip === "b101_occupied_clip"
-                    ? "bg-emerald-900/60 border border-emerald-500 text-emerald-200 font-semibold"
-                    : "bg-slate-900 border border-slate-800 text-slate-400 hover:text-slate-200"
+                    ? "bg-emerald-950/90 border border-emerald-500 text-emerald-200 font-bold shadow-sm shadow-emerald-500/30"
+                    : "bg-slate-900/90 border border-slate-800 text-slate-300 hover:text-white hover:bg-slate-800 hover:border-slate-700 font-medium"
                 }`}
               >
                 Clip 2: B-101 Full Class (24 People)
               </button>
               <button
                 onClick={() => handleClipChange("b207_after_hours_clip")}
-                className={`px-2.5 py-1 rounded text-xs transition ${
+                className={`px-3 py-1.5 rounded-lg text-xs transition cursor-pointer ${
                   selectedClip === "b207_after_hours_clip"
-                    ? "bg-amber-900/60 border border-amber-500 text-amber-200 font-semibold"
-                    : "bg-slate-900 border border-slate-800 text-slate-400 hover:text-slate-200"
+                    ? "bg-amber-950/90 border border-amber-500 text-amber-200 font-bold shadow-sm shadow-amber-500/30"
+                    : "bg-slate-900/90 border border-slate-800 text-slate-300 hover:text-white hover:bg-slate-800 hover:border-slate-700 font-medium"
                 }`}
               >
                 Clip 3: B-207 Overnight Load
               </button>
               <button
                 onClick={() => handleClipChange("live_webcam")}
-                className={`px-2.5 py-1 rounded text-xs flex items-center gap-1.5 transition ${
+                className={`px-3 py-1.5 rounded-lg text-xs flex items-center gap-1.5 transition cursor-pointer ${
                   selectedClip === "live_webcam"
-                    ? "bg-cyan-900/60 border border-cyan-500 text-cyan-200 font-semibold"
-                    : "bg-slate-900 border border-slate-800 text-slate-400 hover:text-slate-200"
+                    ? "bg-cyan-950/90 border border-cyan-500 text-cyan-200 font-bold shadow-sm shadow-cyan-500/30"
+                    : "bg-slate-900/90 border border-slate-800 text-slate-300 hover:text-white hover:bg-slate-800 hover:border-slate-700 font-medium"
                 }`}
               >
                 <Camera className="w-3.5 h-3.5" />

@@ -125,6 +125,7 @@ def get_camera_feed(camera_id: str = "cam-b204-01"):
 @app.post("/api/vision/select_clip")
 def select_clip(req: ClipSelectRequest):
     cv_service.select_clip(req.clip_id)
+    generator_service.generate_live_campus_tick()
     return {"status": "success", "active_clip": req.clip_id}
 
 @app.get("/api/anomalies")

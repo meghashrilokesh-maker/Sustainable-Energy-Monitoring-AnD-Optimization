@@ -24,57 +24,117 @@ class ComputerVisionService:
         self.active_clip = clip_id
         self.clip_start_time = time.time()
 
-    def get_camera_observation(self, camera_id: str = "cam-b204-01") -> Dict[str, Any]:
+    def _get_raw_clip_data(self) -> Dict[str, Any]:
         """
-        Generates structured CV observation per Section 3.3
+        Returns raw vision detection and equipment states for the active clip scenario.
+        Note: For 'live_webcam', video frames are captured client-side in the browser via WebRTC/Canvas;
+        the backend provides a nominal baseline observation for that camera zone.
         """
         elapsed_sec = int(time.time() - self.clip_start_time)
 
         if self.active_clip == "b204_vacant_cooling_clip":
-            # Scenario: People leave room -> vacancy timer ticks
-            person_count = 0
-            # vacancy timer starts from 52 mins (3120 sec) + elapsed
-            vacant_seconds = 3120 + elapsed_sec
-            lights_state = "ON"
-            pcs_count = 17
-            fan_state = "OFF"
-            window_state = "CLOSED"
-            bounding_boxes = []  # No people in frame
-            zone_id = "B-204"
-
+            return {
+                "zone_id": "B-204",
+                "camera_id": "cam-b204-01",
+                "person_count": 0,
+                "vacant_seconds": 3120 + elapsed_sec,
+                "lights_state": "ON",
+                "pcs_count": 17,
+                "fan_state": "OFF",
+                "window_state": "CLOSED",
+                "bounding_boxes": []
+            }
         elif self.active_clip == "b101_occupied_clip":
             person_count = 24
-            vacant_seconds = 0
-            lights_state = "ON"
-            pcs_count = 24
-            fan_state = "ON"
-            window_state = "CLOSED"
-            # Simulated person bounding boxes [x, y, w, h, conf, track_id]
-            bounding_boxes = [
-                {"id": f"p-{i+1}", "bbox": [120 + (i % 6) * 75, 180 + (i // 6) * 80, 48, 110], "conf": 0.94}
-                for i in range(person_count)
-            ]
-            zone_id = "B-101"
-
+            return {
+                "zone_id": "B-101",
+                "camera_id": "cam-b101",
+                "person_count": person_count,
+                "vacant_seconds": 0,
+                "lights_state": "ON",
+                "pcs_count": 24,
+                "fan_state": "ON",
+                "window_state": "CLOSED",
+                "bounding_boxes": [
+                    {"id": f"p-{i+1}", "bbox": [120 + (i % 6) * 75, 180 + (i // 6) * 80, 48, 110], "conf": 0.94}
+                    for i in range(person_count)
+                ]
+            }
         elif self.active_clip == "b207_after_hours_clip":
-            person_count = 0
-            vacant_seconds = 14400 + elapsed_sec
-            lights_state = "ON"
-            pcs_count = 20
-            fan_state = "ON"
-            window_state = "CLOSED"
-            bounding_boxes = []
-            zone_id = "B-207"
+            return {
+                "zone_id": "B-207",
+                "camera_id": "cam-b207",
+                "person_count": 0,
+                "vacant_seconds": 14400 + elapsed_sec,
+                "lights_state": "ON",
+                "pcs_count": 20,
+                "fan_state": "ON",
+                "window_state": "CLOSED",
+                "bounding_boxes": []
+            }
+        elif self.active_clip == "live_webcam":
+            return {
+                "zone_id": "B-204",
+                "camera_id": "cam-b204-01",
+                "person_count": 1,
+                "vacant_seconds": 0,
+                "lights_state": "ON",
+                "pcs_count": 1,
+                "fan_state": "OFF",
+                "window_state": "CLOSED",
+                "bounding_boxes": [{"id": "p-live", "bbox": [240, 160, 160, 240], "conf": 0.96}]
+            }
+        else:
+            return {
+                "zone_id": "B-204",
+                "camera_id": "cam-b204-01",
+                "person_count": 0,
+                "vacant_seconds": 1800,
+                "lights_state": "OFF",
+                "pcs_count": 0,
+                "fan_state": "OFF",
+                "window_state": "CLOSED",
+                "bounding_boxes": []
+            }
 
-        else:  # live webcam or fallback
-            person_count = 1
-            vacant_seconds = 0
-            lights_state = "ON"
-            pcs_count = 1
-            fan_state = "OFF"
-            window_state = "CLOSED"
-            bounding_boxes = [{"id": "p-live", "bbox": [240, 160, 160, 240], "conf": 0.96}]
-            zone_id = "B-204"
+    def get_active_observation_for_zone(self, zone_id: str) -> Optional[Dict[str, Any]]:
+        """
+        Returns structured vision observation for a specific zone if currently observed by active clip.
+        Returns None if this zone is not targeted by the active vision camera/clip.
+        """
+        raw = self._get_raw_clip_data()
+        if raw["zone_id"] != zone_id:
+            return None
+
+        return {
+            "zone_id": raw["zone_id"],
+            "camera_id": raw["camera_id"],
+            "clip_id": self.active_clip,
+            "person_count": raw["person_count"],
+            "vacant_seconds": raw["vacant_seconds"],
+            "equipment_states": {
+                "hvac": "COOLING",
+                "lights": raw["lights_state"],
+                "pcs_on": raw["pcs_count"],
+                "fan": raw["fan_state"],
+                "window": raw["window_state"]
+            },
+            "is_vision_active": True
+        }
+
+    def get_camera_observation(self, camera_id: str = "cam-b204-01") -> Dict[str, Any]:
+        """
+        Generates structured CV observation per Section 3.3
+        """
+        raw = self._get_raw_clip_data()
+        person_count = raw["person_count"]
+        vacant_seconds = raw["vacant_seconds"]
+        lights_state = raw["lights_state"]
+        pcs_count = raw["pcs_count"]
+        fan_state = raw["fan_state"]
+        window_state = raw["window_state"]
+        bounding_boxes = raw["bounding_boxes"]
+        zone_id = raw["zone_id"]
 
         # Meter reading for the zone to compute the CV-vs-Meter reconciliation
         z_state = twin_service.get_zone_state(zone_id) or {}

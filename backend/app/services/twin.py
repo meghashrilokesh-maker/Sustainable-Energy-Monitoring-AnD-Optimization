@@ -92,13 +92,13 @@ class DigitalTwinService:
         pc_units = [e for e in zone_equip if e.get("type") == "PC"]
 
         # 1. Expected Lighting
-        if occupancy > 0 and is_scheduled:
+        if occupancy > 0 or is_scheduled:
             expected_lighting = sum(l.get("rated_kw", 0.6) for l in light_units) or 0.6
         else:
             expected_lighting = 0.0
 
         # 2. Expected Plug loads
-        if occupancy > 0 and is_scheduled:
+        if occupancy > 0 or is_scheduled:
             # Active PCs roughly proportional to people present (capped by total units)
             total_pcs = pc_units[0].get("count", 25) if pc_units else 20
             active_pcs = min(occupancy, total_pcs)

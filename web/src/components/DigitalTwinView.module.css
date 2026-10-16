@@ -1,0 +1,325 @@
+/* DigitalTwinView Scoped Styling */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  max-width: 1400px;
+  margin: 0 auto;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color: #f1f5f9;
+  box-sizing: border-box;
+}
+
+.topBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 18px;
+  background: rgba(13, 19, 33, 0.88);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+}
+
+.controlsGroup {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.segmentedBox {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  background: #080d1a;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+}
+
+.btnPrimary {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  border: none;
+  background: #0891b2;
+  color: #ffffff;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(8, 145, 178, 0.4);
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btnSecondary {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  border: none;
+  background: #4f46e5;
+  color: #ffffff;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.4);
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btnGhost {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  border: none;
+  background: transparent;
+  color: #94a3b8;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btnGhost:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.layerBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  background: #080d1a;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #94a3b8;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.layerBtn:hover {
+  color: #f1f5f9;
+  background: #0f172a;
+}
+
+.layerBtnActive {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  background: #1e293b;
+  border: 1px solid #38bdf8;
+  color: #ffffff;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.isoToggleBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  background: #080d1a;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  color: #38bdf8;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.isoToggleBtnActive {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  background: rgba(56, 189, 248, 0.2);
+  border: 1px solid #38bdf8;
+  color: #38bdf8;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* Main Grid: Floor Plan (Left) + Detail Drawer (Right) */
+.mainGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  gap: 16px;
+  align-items: stretch;
+}
+
+@media (max-width: 1024px) {
+  .mainGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.floorPlanCard {
+  background: rgba(13, 19, 33, 0.92);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #94a3b8;
+  margin-bottom: 12px;
+}
+
+.cardTitle {
+  font-size: 13px;
+  font-weight: 700;
+  color: #f1f5f9;
+}
+
+.svgViewport {
+  position: relative;
+  width: 100%;
+  height: 420px;
+  background: rgba(5, 8, 15, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 16px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.5s ease;
+  box-sizing: border-box;
+}
+
+.svgViewportIso {
+  transform: rotateX(32deg) rotateZ(-12deg) scale(0.92);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+}
+
+.timeScrubberBox {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 12px;
+}
+
+.scrubberHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #cbd5e1;
+  margin-bottom: 8px;
+}
+
+/* Detail Drawer */
+.detailDrawer {
+  background: rgba(13, 19, 33, 0.92);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.drawerHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.metricsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.metricCard {
+  background: #080d1a;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.metricCardWaste {
+  background: rgba(244, 63, 94, 0.12);
+  border: 1px solid rgba(244, 63, 94, 0.35);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.passportBox {
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  background: #080d1a;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 11px;
+}
+
+.passportRow {
+  display: flex;
+  justify-content: space-between;
+  color: #94a3b8;
+  margin-top: 6px;
+}
+
+.equipmentBox {
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  background: #080d1a;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 11px;
+}
+
+.forkBtn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  border: none;
+  background: linear-gradient(135deg, #4f46e5 0%, #2563eb 100%);
+  color: #ffffff;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(79, 70, 229, 0.35);
+  transition: all 0.2s ease;
+}
+
+.forkBtn:hover {
+  background: linear-gradient(135deg, #6366f1 0%, #3b82f6 100%);
+  transform: translateY(-1px);
+}

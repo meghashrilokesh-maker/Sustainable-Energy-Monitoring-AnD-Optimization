@@ -87,12 +87,33 @@ class SyntheticDataGenerator:
         else:
             measured_kw = 0.45
 
+        # Query Vision Monitoring ground-truth observation for THIS specific zone
+        vision_obs = None
+        try:
+            from backend.app.services.cv_service import cv_service
+            vision_obs = cv_service.get_active_observation_for_zone(zone_id)
+        except Exception:
+            vision_obs = None
+
+        if vision_obs is not None:
+            base_occ = vision_obs["person_count"]
+            vacant_sec = vision_obs["vacant_seconds"]
+            # Apply vision-observed equipment states (lights, pcs, fan, window)
+            for eq_k, eq_v in vision_obs.get("equipment_states", {}).items():
+                cv_equip[eq_k] = eq_v
+
+            # Adjust electrical baseline based on vision ground truth occupancy
+            if base_occ > 0:
+                measured_kw = 0.6 + (base_occ * 0.08) + (2.2 if outdoor_t > 28.0 else 1.2)
+            else:
+                measured_kw = 0.45
+
         # ==================== FAULT INJECTIONS ====================
         # F1: Empty-room conditioning in B-204 (The key demo story!)
         if zone_id == "B-204" and self.active_faults.get("F1"):
             # CV detects ZERO people, but AC is blazing at 3.1 kW, lights ON, 17 PCs ON!
             base_occ = 0
-            vacant_sec = 3120  # 52 minutes vacant
+            vacant_sec = vision_obs.get("vacant_seconds", 3120) if (vision_obs and vision_obs.get("clip_id") == "b204_vacant_cooling_clip") else 3120
             cv_equip = {
                 "hvac": "COOLING",
                 "lights": "ON",
