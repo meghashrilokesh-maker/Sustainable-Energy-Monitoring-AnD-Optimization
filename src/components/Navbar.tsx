@@ -20,6 +20,8 @@ interface NavbarProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
   openDemoController: () => void;
+  onOpenAdvisor?: () => void;
+  isAdvisorOpen?: boolean;
   siteTotals?: {
     measured_kw: number;
     expected_kw: number;
@@ -33,6 +35,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   activeTab,
   setActiveTab,
   openDemoController,
+  onOpenAdvisor,
+  isAdvisorOpen,
   siteTotals
 }) => {
   const tabs = [
@@ -106,11 +110,23 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="flex items-center gap-1">
           {tabs.map((tab) => {
             const Icon = tab.icon;
-            const isActive = activeTab === tab.id;
+            const isAdvisorTab = tab.id === "advisor";
+            const isActive = isAdvisorTab
+              ? Boolean(isAdvisorOpen || activeTab === "advisor")
+              : activeTab === tab.id;
+
+            const handleTabClick = () => {
+              if (isAdvisorTab && onOpenAdvisor) {
+                onOpenAdvisor();
+              } else {
+                setActiveTab(tab.id);
+              }
+            };
+
             return (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
+                onClick={handleTabClick}
                 className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium transition-all whitespace-nowrap ${
                   isActive
                     ? "bg-gradient-to-r from-cyan-500/20 to-blue-600/20 text-cyan-300 border border-cyan-500/40 shadow-sm shadow-cyan-500/20"

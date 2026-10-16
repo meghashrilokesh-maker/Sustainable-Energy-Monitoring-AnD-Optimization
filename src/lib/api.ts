@@ -184,39 +184,77 @@ export async function fetchMorningBriefing() {
   return safeFetch("/api/advisor/briefing", MOCK_BRIEFING);
 }
 
-export async function askAdvisor(query: string): Promise<any> {
-  const queryLower = query.toLowerCase();
-  let answer = "Aryabhatta Engineering Campus currently operates at 74/100 efficiency. Our primary energy waste vector is Lab B-204, where 3.1 kW AC cooling and 17 PCs remain active during unoccupied hours.";
-
-  if (queryLower.includes("b-204") || queryLower.includes("lab 204") || queryLower.includes("waste")) {
-    answer = "Lab B-204 (Advanced Computing Lab) currently has 2.82 kW of unexplained load. CV monitors indicate 0 occupants for the past 52 minutes while the thermostat is chilled to 22°C. Enabling automated setback will save ₹287/day immediately.";
-  } else if (queryLower.includes("solar") || queryLower.includes("renewable")) {
-    answer = "Installing a 150 kWp rooftop solar PV array on Block B will generate ~18,000 kWh/month, abating 14.8 tons of CO₂ and reducing monthly bills by ₹1,52,000 with a 3.2-year payback.";
-  } else if (queryLower.includes("peak") || queryLower.includes("demand")) {
-    answer = "Today's peak demand is forecast at 612 kW at 14:15, which risks breaching our 600 kW contracted demand threshold (72% probability). We recommend pre-cooling lecture halls from 13:00 to 13:45 to stagger chiller load.";
-  }
-
-  const fallback = {
-    answer,
-    confidence: 0.96,
-    sources: ["Digital Twin Physics Engine", "Vision Telemetry Stream", "BMS Tariff Schedule"],
-    citations: [
-      { doc: "Twin Physics Engine v2", ref: "B-204 Live Telemetry", confidence: 0.97 },
-      { doc: "Aryabhatta Schedule DB", ref: "Timetable Block-B", confidence: 0.98 }
-    ],
-    tool_trace: [
-      { tool: "query_twin_meter", input: "B-204", output: "3.42 kW measured vs 0.60 kW baseline" },
-      { tool: "check_cv_occupancy", input: "cam-b204-01", output: "0 persons (vacant > 50 min)" }
-    ],
-    numeric_guard_verified: true
-  };
-
-  return safeFetch("/api/advisor/query", fallback, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ query })
-  });
+export interface AdvisorQueryResult {
+  query?: string;
+  answer: string;
+  citations: string[];
+  tool_trace?: Array<{ tool: string; args: any; status: string }>;
+  numeric_guard_verified?: boolean;
 }
+
+export async function askAdvisor(query: string): Promise<AdvisorQueryResult> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 8000);
+
+  try {
+    const res = await fetch(`${API_BASE}/api/advisor/query`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ query }),
+      signal: controller.signal,
+      cache: "no-store"
+    });
+    clearTimeout(timeoutId);
+
+    if (!res.ok) {
+      const errText = await res.text().catch(() => "");
+      throw new Error(`AI Advisor service returned HTTP ${res.status}: ${errText || res.statusText}`);
+    }
+
+    const data = await res.json();
+
+    // Safely normalize citations to string array so React never crashes on objects
+    const citations: string[] = Array.isArray(data.citations)
+      ? data.citations.map((c: any) => {
+          if (typeof c === "string") return c;
+          if (c && typeof c === "object") {
+            if (c.doc && c.ref) return `${c.doc}: ${c.ref}`;
+            if (c.doc) return String(c.doc);
+            return JSON.stringify(c);
+          }
+          return String(c);
+        })
+      : [];
+
+    return {
+      query: data.query || query,
+      answer: data.answer || "No response received from advisor.",
+      citations,
+      tool_trace: Array.isArray(data.tool_trace) ? data.tool_trace : [],
+      numeric_guard_verified: data.numeric_guard_verified ?? true
+    };
+  } catch (err: any) {
+    clearTimeout(timeoutId);
+    if (err.name === "AbortError") {
+      throw new Error(
+        `AI Advisor request timed out. The backend service at ${API_BASE} did not respond within 8 seconds.`
+      );
+    }
+    const msg = err.message || "";
+    if (
+      msg.includes("Failed to fetch") ||
+      msg.includes("NetworkError") ||
+      msg.includes("connection refused") ||
+      msg.includes("ECONNREFUSED")
+    ) {
+      throw new Error(
+        `PulseGrid AI service is offline or unreachable at ${API_BASE}. Please ensure the FastAPI server is running via 'uvicorn backend.app.main:app --port 8000' and NEXT_PUBLIC_API_URL is properly configured.`
+      );
+    }
+    throw new Error(msg || "An unexpected error occurred while communicating with the AI Advisor.");
+  }
+}
+
 
 export async function toggleDemoFault(faultId: string, active: boolean) {
   activeFaultsState[faultId] = active;

@@ -55,3 +55,56 @@ body {
   border: 1px solid rgba(56, 189, 248, 0.2);
   box-shadow: 0 0 25px rgba(56, 189, 248, 0.08);
 }
+
+/* Robot Assistant Animations */
+@keyframes botFloat {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes eyeBlink {
+  0%, 92%, 100% {
+    transform: scaleY(1);
+  }
+  96% {
+    transform: scaleY(0.1);
+  }
+}
+
+@keyframes antennaPulse {
+  0%, 100% {
+    opacity: 0.7;
+    filter: drop-shadow(0 0 4px #06b6d4);
+  }
+  50% {
+    opacity: 1;
+    filter: drop-shadow(0 0 10px #22d3ee);
+  }
+}
+
+.animate-bot-float {
+  animation: botFloat 3.2s ease-in-out infinite;
+}
+
+.animate-eye-blink {
+  transform-origin: center;
+  animation: eyeBlink 4s ease-in-out infinite;
+}
+
+.animate-antenna-pulse {
+  animation: antennaPulse 2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-bot-float,
+  .animate-eye-blink,
+  .animate-antenna-pulse {
+    animation: none !important;
+    transform: none !important;
+  }
+}
+
