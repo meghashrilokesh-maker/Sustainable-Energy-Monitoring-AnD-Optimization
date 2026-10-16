@@ -86,6 +86,29 @@ body {
   }
 }
 
+/* Red Theme Full-Body Robot Animations */
+@keyframes redCorePulse {
+  0%, 100% {
+    opacity: 0.8;
+    filter: drop-shadow(0 0 4px #ef4444);
+  }
+  50% {
+    opacity: 1;
+    filter: drop-shadow(0 0 12px #f87171);
+  }
+}
+
+@keyframes redThrusterGlow {
+  0%, 100% {
+    transform: scale(0.92);
+    opacity: 0.65;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 1;
+  }
+}
+
 .animate-bot-float {
   animation: botFloat 3.2s ease-in-out infinite;
 }
@@ -99,10 +122,21 @@ body {
   animation: antennaPulse 2s ease-in-out infinite;
 }
 
+.animate-red-core-pulse {
+  animation: redCorePulse 2.4s ease-in-out infinite;
+}
+
+.animate-red-thruster {
+  animation: redThrusterGlow 1.8s ease-in-out infinite;
+  transform-origin: center;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-bot-float,
   .animate-eye-blink,
-  .animate-antenna-pulse {
+  .animate-antenna-pulse,
+  .animate-red-core-pulse,
+  .animate-red-thruster {
     animation: none !important;
     transform: none !important;
   }

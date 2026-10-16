@@ -47,7 +47,6 @@ export const Navbar: React.FC<NavbarProps> = ({
     { id: "analytics", label: "Analytics & Forecast", icon: TrendingUp },
     { id: "anomalies", label: "Anomaly Center", icon: AlertTriangle },
     { id: "simulator", label: "What-If Simulator", icon: Sliders },
-    { id: "advisor", label: "AI Advisor", icon: Sparkles },
     { id: "optimization", label: "Optimization Center", icon: Award },
     { id: "reports", label: "Reports", icon: FileText }
   ];
@@ -110,23 +109,12 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="flex items-center gap-1">
           {tabs.map((tab) => {
             const Icon = tab.icon;
-            const isAdvisorTab = tab.id === "advisor";
-            const isActive = isAdvisorTab
-              ? Boolean(isAdvisorOpen || activeTab === "advisor")
-              : activeTab === tab.id;
-
-            const handleTabClick = () => {
-              if (isAdvisorTab && onOpenAdvisor) {
-                onOpenAdvisor();
-              } else {
-                setActiveTab(tab.id);
-              }
-            };
+            const isActive = activeTab === tab.id;
 
             return (
               <button
                 key={tab.id}
-                onClick={handleTabClick}
+                onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium transition-all whitespace-nowrap ${
                   isActive
                     ? "bg-gradient-to-r from-cyan-500/20 to-blue-600/20 text-cyan-300 border border-cyan-500/40 shadow-sm shadow-cyan-500/20"
