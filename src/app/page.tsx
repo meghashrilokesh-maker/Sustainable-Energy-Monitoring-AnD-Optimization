@@ -7,6 +7,24 @@ import { CommandCenterView } from "../components/CommandCenterView";
 import { LiveMonitorView } from "../components/LiveMonitorView";
 import { VisionMonitorView } from "../components/VisionMonitorView";
 import { DigitalTwinView } from "../components/DigitalTwinView";
+import dynamic from "next/dynamic";
+import { Layers, Box } from "lucide-react";
+
+const BuildingTwin3D = dynamic(
+  () => import("../components/BuildingTwin3D").then((mod) => mod.BuildingTwin3D),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex items-center justify-center h-[560px] bg-[#070b13] border border-slate-800 rounded-2xl text-slate-400 text-sm">
+        <div className="flex items-center gap-2.5">
+          <div className="w-5 h-5 rounded-full border-2 border-cyan-400 border-t-transparent animate-spin" />
+          <span className="font-medium text-slate-300">Loading Block-B 3D Structural Digital Twin...</span>
+        </div>
+      </div>
+    )
+  }
+);
+
 import { AnalyticsForecastView } from "../components/AnalyticsForecastView";
 import { AnomalyCenterView } from "../components/AnomalyCenterView";
 import { WhatIfSimulatorView } from "../components/WhatIfSimulatorView";
@@ -29,6 +47,7 @@ export default function PulseGridApp() {
   const [activeTab, setActiveTab] = useState<string>("command");
   const [isAdvisorOpen, setIsAdvisorOpen] = useState<boolean>(false);
   const [isDemoDrawerOpen, setIsDemoDrawerOpen] = useState<boolean>(false);
+  const [twinMode, setTwinMode] = useState<"2d" | "3d">("3d");
 
   // Core telemetry state
   const [siteSummary, setSiteSummary] = useState<SiteSummary | null>(null);
@@ -145,11 +164,52 @@ export default function PulseGridApp() {
         )}
 
         {activeTab === "twin" && (
-          <DigitalTwinView
-            zones={zones}
-            zoneStates={zoneStates}
-            onForkScenario={handleForkScenario}
-          />
+          <div className="flex flex-col gap-2 w-full">
+            <div className="flex flex-wrap justify-between items-center max-w-[1400px] w-full mx-auto px-4 pt-3 gap-2">
+              <div className="flex items-center gap-2 text-xs text-slate-400">
+                <span className="font-semibold text-slate-200">Digital Twin Projection:</span>
+                <span className="hidden sm:inline">Switch between 2D engineering floor plan and 3D spatial building model</span>
+              </div>
+              <div className="flex items-center gap-1.5 p-1 bg-[#080d1a] border border-slate-800 rounded-lg shadow-sm">
+                <button
+                  onClick={() => setTwinMode("2d")}
+                  className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-xs font-semibold transition-all cursor-pointer ${
+                    twinMode === "2d"
+                      ? "bg-cyan-600 text-white shadow-md shadow-cyan-600/30 border border-cyan-400/50"
+                      : "text-slate-400 hover:text-white hover:bg-slate-800/80 border border-transparent"
+                  }`}
+                >
+                  <Layers className="w-3.5 h-3.5" />
+                  <span>2D Floor Plan</span>
+                </button>
+                <button
+                  onClick={() => setTwinMode("3d")}
+                  className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-xs font-semibold transition-all cursor-pointer ${
+                    twinMode === "3d"
+                      ? "bg-cyan-600 text-white shadow-md shadow-cyan-600/30 border border-cyan-400/50"
+                      : "text-slate-400 hover:text-white hover:bg-slate-800/80 border border-transparent"
+                  }`}
+                >
+                  <Box className="w-3.5 h-3.5" />
+                  <span>3D Spatial Twin</span>
+                </button>
+              </div>
+            </div>
+
+            {twinMode === "2d" ? (
+              <DigitalTwinView
+                zones={zones}
+                zoneStates={zoneStates}
+                onForkScenario={handleForkScenario}
+              />
+            ) : (
+              <BuildingTwin3D
+                zones={zones}
+                zoneStates={zoneStates}
+                onForkScenario={handleForkScenario}
+              />
+            )}
+          </div>
         )}
 
         {activeTab === "analytics" && (

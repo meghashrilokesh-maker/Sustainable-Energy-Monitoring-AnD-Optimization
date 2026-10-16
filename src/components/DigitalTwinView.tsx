@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { 
   Layers, 
   Clock, 
@@ -18,6 +18,54 @@ import {
   CheckCircle2
 } from "lucide-react";
 import { ZoneState, ZoneMetadata } from "../lib/types";
+import styles from "./DigitalTwinView.module.css";
+
+// Fallback campus zones for Block-B and Block-A from backend/data/zones.json
+const CAMPUS_FALLBACK_ZONES: ZoneMetadata[] = [
+  // Block-B Floor 1
+  { id: "B-101", building_id: "Block-B", floor: 1, name: "Computer Lab 1", type: "lab", area_m2: 110, volume_m3: 330, polygon: [[10, 10], [90, 10], [90, 80], [10, 80]], thermal_R: 0.045, thermal_C: 18.5, comfort_min_c: 22.0, comfort_max_c: 26.0, camera_id: "cam-b101", meter_id: "M-B101" },
+  { id: "B-102", building_id: "Block-B", floor: 1, name: "IoT & Embedded Lab", type: "lab", area_m2: 95, volume_m3: 285, polygon: [[95, 10], [175, 10], [175, 80], [95, 80]], thermal_R: 0.048, thermal_C: 16.0, comfort_min_c: 22.0, comfort_max_c: 26.0, camera_id: "cam-b102", meter_id: "M-B102" },
+  { id: "B-103", building_id: "Block-B", floor: 1, name: "Lecture Hall 101", type: "classroom", area_m2: 140, volume_m3: 440, polygon: [[180, 10], [280, 10], [280, 80], [180, 80]], thermal_R: 0.040, thermal_C: 22.0, comfort_min_c: 22.0, comfort_max_c: 26.0, camera_id: "cam-b103", meter_id: "M-B103" },
+  { id: "B-104", building_id: "Block-B", floor: 1, name: "Faculty Cabin A", type: "office", area_m2: 55, volume_m3: 165, polygon: [[10, 85], [90, 85], [90, 145], [10, 145]], thermal_R: 0.065, thermal_C: 10.5, comfort_min_c: 22.5, comfort_max_c: 26.0, camera_id: "cam-b104", meter_id: "M-B104" },
+  { id: "B-105", building_id: "Block-B", floor: 1, name: "Corridor & Concourse L1", type: "corridor", area_m2: 120, volume_m3: 360, polygon: [[95, 85], [175, 85], [175, 145], [95, 145]], thermal_R: 0.035, thermal_C: 15.0, comfort_min_c: 21.0, comfort_max_c: 28.0, camera_id: "cam-b105", meter_id: "M-B105" },
+  { id: "B-106", building_id: "Block-B", floor: 1, name: "Robotics Workshop", type: "lab", area_m2: 130, volume_m3: 400, polygon: [[180, 85], [280, 85], [280, 145], [180, 145]], thermal_R: 0.042, thermal_C: 20.0, comfort_min_c: 22.0, comfort_max_c: 26.5, camera_id: "cam-b106", meter_id: "M-B106" },
+  // Block-B Floor 2
+  { id: "B-201", building_id: "Block-B", floor: 2, name: "AI & Machine Learning Lab", type: "lab", area_m2: 115, volume_m3: 345, polygon: [[10, 10], [90, 10], [90, 80], [10, 80]], thermal_R: 0.046, thermal_C: 19.0, comfort_min_c: 22.0, comfort_max_c: 25.5, camera_id: "cam-b201", meter_id: "M-B201" },
+  { id: "B-202", building_id: "Block-B", floor: 2, name: "Data Science Lab", type: "lab", area_m2: 95, volume_m3: 285, polygon: [[95, 10], [175, 10], [175, 80], [95, 80]], thermal_R: 0.047, thermal_C: 16.5, comfort_min_c: 22.0, comfort_max_c: 25.5, camera_id: "cam-b202", meter_id: "M-B202" },
+  { id: "B-203", building_id: "Block-B", floor: 2, name: "Lecture Hall 201", type: "classroom", area_m2: 140, volume_m3: 440, polygon: [[180, 10], [280, 10], [280, 80], [180, 80]], thermal_R: 0.041, thermal_C: 22.5, comfort_min_c: 22.0, comfort_max_c: 26.0, camera_id: "cam-b203", meter_id: "M-B203" },
+  { id: "B-204", building_id: "Block-B", floor: 2, name: "Advanced Computing Lab", type: "lab", area_m2: 125, volume_m3: 375, polygon: [[10, 85], [90, 85], [90, 145], [10, 145]], thermal_R: 0.043, thermal_C: 19.5, comfort_min_c: 22.0, comfort_max_c: 25.0, camera_id: "cam-b204-01", meter_id: "M-B204" },
+  { id: "B-205", building_id: "Block-B", floor: 2, name: "Corridor & Study Lounge L2", type: "corridor", area_m2: 120, volume_m3: 360, polygon: [[95, 85], [175, 85], [175, 145], [95, 145]], thermal_R: 0.038, thermal_C: 15.5, comfort_min_c: 21.0, comfort_max_c: 27.5, camera_id: "cam-b205", meter_id: "M-B205" },
+  { id: "B-207", building_id: "Block-B", floor: 2, name: "Cybersecurity & Networks Lab", type: "lab", area_m2: 110, volume_m3: 330, polygon: [[180, 85], [280, 85], [280, 145], [180, 145]], thermal_R: 0.045, thermal_C: 18.0, comfort_min_c: 22.0, comfort_max_c: 25.5, camera_id: "cam-b207", meter_id: "M-B207" },
+  // Block-A Floor 1
+  { id: "A-101", building_id: "Block-A", floor: 1, name: "Campus Admin Office", type: "office", area_m2: 130, volume_m3: 390, polygon: [[10, 10], [90, 10], [90, 80], [10, 80]], thermal_R: 0.052, thermal_C: 18.0, comfort_min_c: 22.5, comfort_max_c: 26.0, camera_id: "cam-a101", meter_id: "M-A101" },
+  { id: "A-102", building_id: "Block-A", floor: 1, name: "Executive Conference Room", type: "office", area_m2: 80, volume_m3: 240, polygon: [[95, 10], [175, 10], [175, 80], [95, 80]], thermal_R: 0.055, thermal_C: 14.0, comfort_min_c: 22.0, comfort_max_c: 25.0, camera_id: "cam-a102", meter_id: "M-A102" },
+  { id: "A-103", building_id: "Block-A", floor: 1, name: "Lecture Theater A1", type: "classroom", area_m2: 150, volume_m3: 480, polygon: [[180, 10], [280, 10], [280, 80], [180, 80]], thermal_R: 0.042, thermal_C: 24.0, comfort_min_c: 22.0, comfort_max_c: 26.0, camera_id: "cam-a103", meter_id: "M-A103" },
+  // Block-A Floor 2
+  { id: "A-201", building_id: "Block-A", floor: 2, name: "Central Library & Digital Reading", type: "office", area_m2: 180, volume_m3: 540, polygon: [[10, 10], [100, 10], [100, 80], [10, 80]], thermal_R: 0.048, thermal_C: 28.0, comfort_min_c: 22.5, comfort_max_c: 26.0, camera_id: "cam-a201", meter_id: "M-A201" },
+  { id: "A-202", building_id: "Block-A", floor: 2, name: "Faculty Research Hub", type: "office", area_m2: 85, volume_m3: 255, polygon: [[105, 10], [175, 10], [175, 80], [105, 80]], thermal_R: 0.054, thermal_C: 15.0, comfort_min_c: 22.0, comfort_max_c: 26.0, camera_id: "cam-a202", meter_id: "M-A202" },
+  { id: "A-203", building_id: "Block-A", floor: 2, name: "Auditorium Seminar Hall", type: "classroom", area_m2: 210, volume_m3: 680, polygon: [[180, 10], [280, 10], [280, 80], [180, 80]], thermal_R: 0.038, thermal_C: 32.0, comfort_min_c: 22.0, comfort_max_c: 26.0, camera_id: "cam-a203", meter_id: "M-A203" }
+];
+
+const CAMPUS_FALLBACK_STATES: ZoneState[] = [
+  { zone_id: "B-101", name: "Computer Lab 1", building_id: "Block-B", floor: 1, type: "lab", area_m2: 110, occupancy: 24, vacant_seconds: 0, temp_c: 23.4, outdoor_temp_c: 32.5, setpoint_c: 24.0, rh_pct: 54, co2_ppm: 680, measured_kw: 1.85, expected_kw: 1.80, unexplained_kw: 0.05, category_breakdown: { hvac: 1.1, lighting: 0.35, plug_loads: 0.4, other: 0.0 }, equipment_states: { hvac: "COOLING_NORMAL", lights: "ON", pcs_on: 24, fan: "AUTO", window: "CLOSED" }, data_quality: "GOOD", confidence: 0.95, last_updated: new Date().toISOString() },
+  { zone_id: "B-102", name: "IoT & Embedded Lab", building_id: "Block-B", floor: 1, type: "lab", area_m2: 95, occupancy: 16, vacant_seconds: 0, temp_c: 23.8, outdoor_temp_c: 32.5, setpoint_c: 24.0, rh_pct: 52, co2_ppm: 620, measured_kw: 1.10, expected_kw: 1.05, unexplained_kw: 0.05, category_breakdown: { hvac: 0.65, lighting: 0.25, plug_loads: 0.2, other: 0.0 }, equipment_states: { hvac: "COOLING_NORMAL", lights: "ON", pcs_on: 16, fan: "AUTO", window: "CLOSED" }, data_quality: "GOOD", confidence: 0.94, last_updated: new Date().toISOString() },
+  { zone_id: "B-103", name: "Lecture Hall 101", building_id: "Block-B", floor: 1, type: "classroom", area_m2: 140, occupancy: 42, vacant_seconds: 0, temp_c: 24.1, outdoor_temp_c: 32.5, setpoint_c: 24.0, rh_pct: 56, co2_ppm: 820, measured_kw: 2.10, expected_kw: 2.00, unexplained_kw: 0.10, category_breakdown: { hvac: 1.45, lighting: 0.45, plug_loads: 0.2, other: 0.0 }, equipment_states: { hvac: "COOLING_NORMAL", lights: "ON", pcs_on: 2, fan: "AUTO", window: "CLOSED" }, data_quality: "GOOD", confidence: 0.96, last_updated: new Date().toISOString() },
+  { zone_id: "B-104", name: "Faculty Cabin A", building_id: "Block-B", floor: 1, type: "office", area_m2: 55, occupancy: 3, vacant_seconds: 0, temp_c: 24.0, outdoor_temp_c: 32.5, setpoint_c: 24.0, rh_pct: 50, co2_ppm: 520, measured_kw: 0.45, expected_kw: 0.40, unexplained_kw: 0.05, category_breakdown: { hvac: 0.28, lighting: 0.1, plug_loads: 0.07, other: 0.0 }, equipment_states: { hvac: "COOLING_NORMAL", lights: "ON", pcs_on: 3, fan: "LOW", window: "CLOSED" }, data_quality: "GOOD", confidence: 0.92, last_updated: new Date().toISOString() },
+  { zone_id: "B-105", name: "Corridor & Concourse L1", building_id: "Block-B", floor: 1, type: "corridor", area_m2: 120, occupancy: 8, vacant_seconds: 0, temp_c: 25.2, outdoor_temp_c: 32.5, setpoint_c: 25.0, rh_pct: 55, co2_ppm: 490, measured_kw: 0.80, expected_kw: 0.80, unexplained_kw: 0.00, category_breakdown: { hvac: 0.0, lighting: 0.8, plug_loads: 0.0, other: 0.0 }, equipment_states: { hvac: "OFF", lights: "ON", pcs_on: 0, fan: "OFF", window: "OPEN" }, data_quality: "GOOD", confidence: 0.91, last_updated: new Date().toISOString() },
+  { zone_id: "B-106", name: "Robotics Workshop", building_id: "Block-B", floor: 1, type: "lab", area_m2: 130, occupancy: 14, vacant_seconds: 0, temp_c: 23.6, outdoor_temp_c: 32.5, setpoint_c: 24.0, rh_pct: 53, co2_ppm: 590, measured_kw: 1.95, expected_kw: 1.85, unexplained_kw: 0.10, category_breakdown: { hvac: 1.15, lighting: 0.4, plug_loads: 0.4, other: 0.0 }, equipment_states: { hvac: "COOLING_NORMAL", lights: "ON", pcs_on: 12, fan: "AUTO", window: "CLOSED" }, data_quality: "GOOD", confidence: 0.95, last_updated: new Date().toISOString() },
+  { zone_id: "B-201", name: "AI & Machine Learning Lab", building_id: "Block-B", floor: 2, type: "lab", area_m2: 115, occupancy: 22, vacant_seconds: 0, temp_c: 23.5, outdoor_temp_c: 32.5, setpoint_c: 24.0, rh_pct: 52, co2_ppm: 690, measured_kw: 2.40, expected_kw: 2.30, unexplained_kw: 0.10, category_breakdown: { hvac: 1.35, lighting: 0.35, plug_loads: 0.7, other: 0.0 }, equipment_states: { hvac: "COOLING_NORMAL", lights: "ON", pcs_on: 22, fan: "AUTO", window: "CLOSED" }, data_quality: "GOOD", confidence: 0.96, last_updated: new Date().toISOString() },
+  { zone_id: "B-202", name: "Data Science Lab", building_id: "Block-B", floor: 2, type: "lab", area_m2: 95, occupancy: 18, vacant_seconds: 0, temp_c: 23.9, outdoor_temp_c: 32.5, setpoint_c: 24.0, rh_pct: 51, co2_ppm: 640, measured_kw: 1.65, expected_kw: 1.60, unexplained_kw: 0.05, category_breakdown: { hvac: 0.95, lighting: 0.3, plug_loads: 0.4, other: 0.0 }, equipment_states: { hvac: "COOLING_NORMAL", lights: "ON", pcs_on: 18, fan: "AUTO", window: "CLOSED" }, data_quality: "GOOD", confidence: 0.94, last_updated: new Date().toISOString() },
+  { zone_id: "B-203", name: "Lecture Hall 201", building_id: "Block-B", floor: 2, type: "classroom", area_m2: 140, occupancy: 38, vacant_seconds: 0, temp_c: 24.2, outdoor_temp_c: 32.5, setpoint_c: 24.0, rh_pct: 55, co2_ppm: 780, measured_kw: 2.80, expected_kw: 2.70, unexplained_kw: 0.10, category_breakdown: { hvac: 1.9, lighting: 0.6, plug_loads: 0.3, other: 0.0 }, equipment_states: { hvac: "COOLING_NORMAL", lights: "ON", pcs_on: 4, fan: "AUTO", window: "CLOSED" }, data_quality: "GOOD", confidence: 0.95, last_updated: new Date().toISOString() },
+  { zone_id: "B-204", name: "Advanced Computing Lab", building_id: "Block-B", floor: 2, type: "lab", area_m2: 125, occupancy: 0, vacant_seconds: 2840, temp_c: 20.8, outdoor_temp_c: 32.5, setpoint_c: 20.0, rh_pct: 46, co2_ppm: 430, measured_kw: 3.42, expected_kw: 1.20, unexplained_kw: 2.22, category_breakdown: { hvac: 2.65, lighting: 0.52, plug_loads: 0.25, other: 0.0 }, equipment_states: { hvac: "COOLING_HIGH", lights: "ON", pcs_on: 24, fan: "HIGH", window: "CLOSED" }, data_quality: "FAULT_ACTIVE", confidence: 0.98, last_updated: new Date().toISOString() },
+  { zone_id: "B-205", name: "Corridor & Study Lounge L2", building_id: "Block-B", floor: 2, type: "corridor", area_m2: 120, occupancy: 6, vacant_seconds: 0, temp_c: 25.1, outdoor_temp_c: 32.5, setpoint_c: 25.0, rh_pct: 54, co2_ppm: 510, measured_kw: 0.90, expected_kw: 0.85, unexplained_kw: 0.05, category_breakdown: { hvac: 0.0, lighting: 0.9, plug_loads: 0.0, other: 0.0 }, equipment_states: { hvac: "OFF", lights: "ON", pcs_on: 0, fan: "OFF", window: "CLOSED" }, data_quality: "GOOD", confidence: 0.93, last_updated: new Date().toISOString() },
+  { zone_id: "B-207", name: "Cybersecurity & Networks Lab", building_id: "Block-B", floor: 2, type: "lab", area_m2: 110, occupancy: 0, vacant_seconds: 1420, temp_c: 21.8, outdoor_temp_c: 32.5, setpoint_c: 22.0, rh_pct: 48, co2_ppm: 450, measured_kw: 2.75, expected_kw: 1.90, unexplained_kw: 0.85, category_breakdown: { hvac: 1.95, lighting: 0.45, plug_loads: 0.35, other: 0.0 }, equipment_states: { hvac: "COOLING_HIGH", lights: "ON", pcs_on: 15, fan: "MED", window: "CLOSED" }, data_quality: "SUSPICIOUS", confidence: 0.92, last_updated: new Date().toISOString() },
+  { zone_id: "A-101", name: "Campus Admin Office", building_id: "Block-A", floor: 1, type: "office", area_m2: 130, occupancy: 12, vacant_seconds: 0, temp_c: 23.5, outdoor_temp_c: 32.5, setpoint_c: 24.0, rh_pct: 50, co2_ppm: 550, measured_kw: 1.40, expected_kw: 1.35, unexplained_kw: 0.05, category_breakdown: { hvac: 0.8, lighting: 0.35, plug_loads: 0.25, other: 0.0 }, equipment_states: { hvac: "COOLING_NORMAL", lights: "ON", pcs_on: 12, fan: "AUTO", window: "CLOSED" }, data_quality: "GOOD", confidence: 0.94, last_updated: new Date().toISOString() },
+  { zone_id: "A-102", name: "Executive Conference Room", building_id: "Block-A", floor: 1, type: "office", area_m2: 80, occupancy: 6, vacant_seconds: 0, temp_c: 23.2, outdoor_temp_c: 32.5, setpoint_c: 23.0, rh_pct: 48, co2_ppm: 520, measured_kw: 0.95, expected_kw: 0.90, unexplained_kw: 0.05, category_breakdown: { hvac: 0.6, lighting: 0.2, plug_loads: 0.15, other: 0.0 }, equipment_states: { hvac: "COOLING_NORMAL", lights: "ON", pcs_on: 2, fan: "AUTO", window: "CLOSED" }, data_quality: "GOOD", confidence: 0.95, last_updated: new Date().toISOString() },
+  { zone_id: "A-103", name: "Lecture Theater A1", building_id: "Block-A", floor: 1, type: "classroom", area_m2: 150, occupancy: 60, vacant_seconds: 0, temp_c: 24.0, outdoor_temp_c: 32.5, setpoint_c: 24.0, rh_pct: 58, co2_ppm: 890, measured_kw: 2.85, expected_kw: 2.75, unexplained_kw: 0.10, category_breakdown: { hvac: 2.0, lighting: 0.55, plug_loads: 0.3, other: 0.0 }, equipment_states: { hvac: "COOLING_NORMAL", lights: "ON", pcs_on: 2, fan: "AUTO", window: "CLOSED" }, data_quality: "GOOD", confidence: 0.96, last_updated: new Date().toISOString() },
+  { zone_id: "A-201", name: "Central Library & Digital Reading", building_id: "Block-A", floor: 2, type: "office", area_m2: 180, occupancy: 45, vacant_seconds: 0, temp_c: 23.6, outdoor_temp_c: 32.5, setpoint_c: 24.0, rh_pct: 52, co2_ppm: 710, measured_kw: 2.20, expected_kw: 2.10, unexplained_kw: 0.10, category_breakdown: { hvac: 1.3, lighting: 0.6, plug_loads: 0.3, other: 0.0 }, equipment_states: { hvac: "COOLING_NORMAL", lights: "ON", pcs_on: 20, fan: "AUTO", window: "CLOSED" }, data_quality: "GOOD", confidence: 0.95, last_updated: new Date().toISOString() },
+  { zone_id: "A-202", name: "Faculty Research Hub", building_id: "Block-A", floor: 2, type: "office", area_m2: 85, occupancy: 10, vacant_seconds: 0, temp_c: 23.8, outdoor_temp_c: 32.5, setpoint_c: 24.0, rh_pct: 50, co2_ppm: 560, measured_kw: 1.15, expected_kw: 1.10, unexplained_kw: 0.05, category_breakdown: { hvac: 0.7, lighting: 0.25, plug_loads: 0.2, other: 0.0 }, equipment_states: { hvac: "COOLING_NORMAL", lights: "ON", pcs_on: 10, fan: "AUTO", window: "CLOSED" }, data_quality: "GOOD", confidence: 0.93, last_updated: new Date().toISOString() },
+  { zone_id: "A-203", name: "Auditorium Seminar Hall", building_id: "Block-A", floor: 2, type: "classroom", area_m2: 210, occupancy: 85, vacant_seconds: 0, temp_c: 24.2, outdoor_temp_c: 32.5, setpoint_c: 24.0, rh_pct: 60, co2_ppm: 940, measured_kw: 3.60, expected_kw: 3.45, unexplained_kw: 0.15, category_breakdown: { hvac: 2.7, lighting: 0.6, plug_loads: 0.3, other: 0.0 }, equipment_states: { hvac: "COOLING_NORMAL", lights: "ON", pcs_on: 4, fan: "AUTO", window: "CLOSED" }, data_quality: "GOOD", confidence: 0.97, last_updated: new Date().toISOString() }
+];
 
 interface DigitalTwinProps {
   zones: ZoneMetadata[];
@@ -26,8 +74,8 @@ interface DigitalTwinProps {
 }
 
 export const DigitalTwinView: React.FC<DigitalTwinProps> = ({
-  zones,
-  zoneStates,
+  zones: propZones,
+  zoneStates: propZoneStates,
   onForkScenario
 }) => {
   const [activeLayer, setActiveLayer] = useState<"waste" | "power" | "occupancy" | "temp" | "anomalies">("waste");
@@ -37,98 +85,108 @@ export const DigitalTwinView: React.FC<DigitalTwinProps> = ({
   const [timeOffsetHours, setTimeOffsetHours] = useState<number>(0);
   const [is3DIsometric, setIs3DIsometric] = useState<boolean>(false);
 
-  // Filter zones for selected building & floor
-  const filteredZones = zones.filter(
-    z => z.building_id === selectedBuilding && z.floor === selectedFloor
-  );
+  // Fallback resilience: Use live backend data if available, otherwise use campus fallback metadata
+  const effectiveZones = useMemo(() => {
+    return (propZones && propZones.length > 0) ? propZones : CAMPUS_FALLBACK_ZONES;
+  }, [propZones]);
 
-  const selectedZone = zones.find(z => z.id === selectedZoneId) || zones[0];
-  const selectedState = zoneStates.find(s => s.zone_id === selectedZoneId);
+  const effectiveZoneStates = useMemo(() => {
+    return (propZoneStates && propZoneStates.length > 0) ? propZoneStates : CAMPUS_FALLBACK_STATES;
+  }, [propZoneStates]);
+
+  // Filter zones for selected building & floor
+  const filteredZones = useMemo(() => {
+    return effectiveZones.filter(
+      z => z.building_id === selectedBuilding && z.floor === selectedFloor
+    );
+  }, [effectiveZones, selectedBuilding, selectedFloor]);
+
+  // Find selected zone or default to first in filtered
+  const selectedZone = effectiveZones.find(z => z.id === selectedZoneId) || filteredZones[0] || effectiveZones[0];
+  const selectedState = effectiveZoneStates.find(s => s.zone_id === selectedZone?.id) || CAMPUS_FALLBACK_STATES[0];
 
   // Color generator based on active layer
   const getZoneFillColor = (zoneId: string) => {
-    const state = zoneStates.find(s => s.zone_id === zoneId);
+    const state = effectiveZoneStates.find(s => s.zone_id === zoneId);
     if (!state) return "#1e293b";
 
     if (activeLayer === "waste") {
-      // Unexplained load
-      if (state.unexplained_kw > 1.5) return "rgba(244, 63, 94, 0.85)"; // Red hotspot
+      if (state.unexplained_kw > 1.2) return "rgba(244, 63, 94, 0.85)"; // Red hotspot
       if (state.unexplained_kw > 0.4) return "rgba(245, 158, 11, 0.75)"; // Amber
-      return "rgba(16, 185, 129, 0.35)"; // Normal Green
+      return "rgba(16, 185, 129, 0.45)"; // Normal Green
     } else if (activeLayer === "power") {
-      // Power density W/m2
-      const density = (state.measured_kw * 1000) / state.area_m2;
+      const density = (state.measured_kw * 1000) / (state.area_m2 || 100);
       if (density > 25) return "rgba(56, 189, 248, 0.85)";
       if (density > 15) return "rgba(56, 189, 248, 0.55)";
-      return "rgba(56, 189, 248, 0.25)";
+      return "rgba(56, 189, 248, 0.30)";
     } else if (activeLayer === "occupancy") {
-      if (state.occupancy > 15) return "rgba(168, 85, 247, 0.85)";
+      if (state.occupancy > 20) return "rgba(168, 85, 247, 0.85)";
       if (state.occupancy > 0) return "rgba(168, 85, 247, 0.50)";
       return "rgba(51, 65, 85, 0.40)";
     } else if (activeLayer === "temp") {
-      if (state.temp_c > 25.5) return "rgba(239, 68, 68, 0.75)";
+      if (state.temp_c > 25.0) return "rgba(239, 68, 68, 0.75)";
       if (state.temp_c < 22.0) return "rgba(59, 130, 246, 0.75)";
       return "rgba(16, 185, 129, 0.50)";
     } else {
       // Anomalies
       if (zoneId === "B-204") return "rgba(244, 63, 94, 0.85)";
       if (zoneId === "B-207") return "rgba(245, 158, 11, 0.75)";
-      return "rgba(16, 185, 129, 0.35)";
+      return "rgba(16, 185, 129, 0.45)";
     }
   };
 
   return (
-    <div className="space-y-4 p-4 max-w-7xl mx-auto">
+    <div className={styles.container}>
       {/* Top Controls: Building/Floor picker, Layer Switcher, 2.5D Toggle */}
-      <div className="glass-panel p-4 rounded-xl border border-slate-800 flex flex-wrap items-center justify-between gap-4">
-        <div className="flex flex-wrap items-center gap-3 text-xs">
-          <div className="flex items-center gap-1.5 p-1 rounded-lg bg-slate-900 border border-slate-800">
+      <div className={styles.topBar}>
+        <div className={styles.controlsGroup}>
+          {/* Building Picker */}
+          <div className={styles.segmentedBox}>
             <button
-              onClick={() => setSelectedBuilding("Block-B")}
-              className={`px-2.5 py-1 rounded font-semibold transition ${
-                selectedBuilding === "Block-B" ? "bg-cyan-600 text-white shadow-xs" : "text-slate-400 hover:text-white"
-              }`}
+              onClick={() => {
+                setSelectedBuilding("Block-B");
+                setSelectedZoneId("B-204");
+              }}
+              className={selectedBuilding === "Block-B" ? styles.btnPrimary : styles.btnGhost}
             >
               Block B (Active Twin)
             </button>
             <button
-              onClick={() => setSelectedBuilding("Block-A")}
-              className={`px-2.5 py-1 rounded font-semibold transition ${
-                selectedBuilding === "Block-A" ? "bg-cyan-600 text-white shadow-xs" : "text-slate-400 hover:text-white"
-              }`}
+              onClick={() => {
+                setSelectedBuilding("Block-A");
+                setSelectedZoneId("A-201");
+              }}
+              className={selectedBuilding === "Block-A" ? styles.btnPrimary : styles.btnGhost}
             >
               Block A (Admin & Hall)
             </button>
           </div>
 
-          <div className="flex items-center gap-1.5 p-1 rounded-lg bg-slate-900 border border-slate-800">
+          {/* Floor Picker */}
+          <div className={styles.segmentedBox}>
             <button
               onClick={() => setSelectedFloor(1)}
-              className={`px-2.5 py-1 rounded font-semibold transition ${
-                selectedFloor === 1 ? "bg-indigo-600 text-white" : "text-slate-400 hover:text-white"
-              }`}
+              className={selectedFloor === 1 ? styles.btnSecondary : styles.btnGhost}
             >
               Level 1
             </button>
             <button
               onClick={() => setSelectedFloor(2)}
-              className={`px-2.5 py-1 rounded font-semibold transition ${
-                selectedFloor === 2 ? "bg-indigo-600 text-white" : "text-slate-400 hover:text-white"
-              }`}
+              className={selectedFloor === 2 ? styles.btnSecondary : styles.btnGhost}
             >
               Level 2
             </button>
           </div>
         </div>
 
-        {/* Layer Switcher */}
-        <div className="flex flex-wrap items-center gap-1.5 text-xs">
+        {/* Layer Switcher & 2.5D Isometric */}
+        <div className={styles.controlsGroup}>
           {[
-            { id: "waste", label: "Waste (UL)", icon: Flame, color: "text-rose-400" },
-            { id: "power", label: "Power Density", icon: Zap, color: "text-cyan-400" },
-            { id: "occupancy", label: "Occupancy (CV)", icon: Users, color: "text-purple-400" },
-            { id: "temp", label: "Thermal (°C)", icon: Thermometer, color: "text-emerald-400" },
-            { id: "anomalies", label: "Anomalies", icon: AlertTriangle, color: "text-amber-400" }
+            { id: "waste", label: "Waste (UL)", icon: Flame, color: "#f43f5e" },
+            { id: "power", label: "Power Density", icon: Zap, color: "#38bdf8" },
+            { id: "occupancy", label: "Occupancy (CV)", icon: Users, color: "#a855f7" },
+            { id: "temp", label: "Thermal (°C)", icon: Thermometer, color: "#10b981" },
+            { id: "anomalies", label: "Anomalies", icon: AlertTriangle, color: "#f59e0b" }
           ].map(layer => {
             const Icon = layer.icon;
             const isActive = activeLayer === layer.id;
@@ -136,13 +194,9 @@ export const DigitalTwinView: React.FC<DigitalTwinProps> = ({
               <button
                 key={layer.id}
                 onClick={() => setActiveLayer(layer.id as any)}
-                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md transition ${
-                  isActive
-                    ? "bg-slate-800 border border-slate-600 text-white font-semibold"
-                    : "text-slate-400 hover:text-slate-200 hover:bg-slate-900"
-                }`}
+                className={isActive ? styles.layerBtnActive : styles.layerBtn}
               >
-                <Icon className={`w-3.5 h-3.5 ${layer.color}`} />
+                <Icon size={14} color={layer.color} />
                 <span>{layer.label}</span>
               </button>
             );
@@ -150,46 +204,40 @@ export const DigitalTwinView: React.FC<DigitalTwinProps> = ({
 
           <button
             onClick={() => setIs3DIsometric(!is3DIsometric)}
-            className={`flex items-center gap-1 px-2.5 py-1 rounded-md border text-xs font-semibold ml-2 transition ${
-              is3DIsometric
-                ? "bg-cyan-500/20 border-cyan-500 text-cyan-300"
-                : "bg-slate-900 border-slate-800 text-slate-400 hover:text-white"
-            }`}
+            className={is3DIsometric ? styles.isoToggleBtnActive : styles.isoToggleBtn}
           >
-            <Box className="w-3.5 h-3.5 text-cyan-400" />
+            <Box size={14} color="#38bdf8" />
             <span>2.5D Isometric</span>
           </button>
         </div>
       </div>
 
-      {/* Main Twin Space: Spatial Floor Plan (Left 65%) + Zone Detail Drawer (Right 35%) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+      {/* Main Twin Space: Spatial Floor Plan (Left) + Zone Detail Drawer (Right) */}
+      <div className={styles.mainGrid}>
         {/* Spatial Floor Plan Canvas */}
-        <div className="lg:col-span-8 glass-panel p-4 rounded-xl border border-slate-800 flex flex-col justify-between">
+        <div className={styles.floorPlanCard}>
           <div>
-            <div className="flex items-center justify-between text-xs text-slate-400 mb-2">
-              <span className="font-semibold text-slate-200">
+            <div className={styles.cardHeader}>
+              <span className={styles.cardTitle}>
                 Spatial Floor Plan: {selectedBuilding} Level {selectedFloor}
               </span>
-              <span>Click on any room polygon to inspect physics & passport</span>
+              <span>Click on any room polygon to inspect physics passport</span>
             </div>
 
             {/* SVG Interactive Floor Plan with Optional 2.5D Transform */}
-            <div className={`relative w-full h-[400px] bg-slate-950/90 rounded-xl border border-slate-800 p-4 overflow-hidden flex items-center justify-center transition-all duration-500 ${
-              is3DIsometric ? "[transform:rotateX(35deg)_rotateZ(-15deg)_scale(0.9)] shadow-2xl" : ""
-            }`}>
+            <div className={`${styles.svgViewport} ${is3DIsometric ? styles.svgViewportIso : ""}`}>
               {/* Floor Plan Coordinate Grid */}
-              <svg viewBox="0 0 300 160" className="w-full h-full select-none">
+              <svg viewBox="0 0 300 160" style={{ width: "100%", height: "100%", userSelect: "none" }}>
                 <defs>
                   <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
-                    <path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.04)" strokeWidth="0.5"/>
+                    <path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="0.5"/>
                   </pattern>
                 </defs>
                 <rect width="300" height="160" fill="url(#grid)" />
 
                 {/* Render Zone Polygons */}
                 {filteredZones.map(zone => {
-                  const state = zoneStates.find(s => s.zone_id === zone.id);
+                  const state = effectiveZoneStates.find(s => s.zone_id === zone.id);
                   const isSelected = selectedZoneId === zone.id;
                   const fillColor = getZoneFillColor(zone.id);
 
@@ -202,14 +250,17 @@ export const DigitalTwinView: React.FC<DigitalTwinProps> = ({
                     <g 
                       key={zone.id} 
                       onClick={() => setSelectedZoneId(zone.id)}
-                      className="cursor-pointer group"
+                      style={{ cursor: "pointer" }}
                     >
                       <polygon
                         points={points}
                         fill={fillColor}
-                        stroke={isSelected ? "#38bdf8" : "rgba(255,255,255,0.25)"}
+                        stroke={isSelected ? "#38bdf8" : "rgba(255,255,255,0.35)"}
                         strokeWidth={isSelected ? "2.5" : "1"}
-                        className="transition-all duration-300 hover:opacity-90"
+                        style={{
+                          transition: "fill 0.2s ease, stroke 0.2s ease, filter 0.2s ease",
+                          filter: isSelected ? "drop-shadow(0 0 8px rgba(56, 189, 248, 0.6))" : "none"
+                        }}
                       />
                       {/* Zone Name Label */}
                       <text
@@ -217,9 +268,10 @@ export const DigitalTwinView: React.FC<DigitalTwinProps> = ({
                         y={centerY - 6}
                         textAnchor="middle"
                         fill="#ffffff"
-                        fontSize="6"
+                        fontSize="6.5"
                         fontWeight="bold"
-                        className="pointer-events-none tracking-wider"
+                        letterSpacing="0.5"
+                        style={{ pointerEvents: "none" }}
                       >
                         {zone.id}
                       </text>
@@ -228,16 +280,17 @@ export const DigitalTwinView: React.FC<DigitalTwinProps> = ({
                         x={centerX}
                         y={centerY + 6}
                         textAnchor="middle"
-                        fill={state && state.unexplained_kw > 1 ? "#fda4af" : "#94a3b8"}
-                        fontSize="4.5"
+                        fill={state && state.unexplained_kw > 1 ? "#fca5a5" : "#cbd5e1"}
+                        fontSize="5"
                         fontFamily="monospace"
-                        className="pointer-events-none"
+                        fontWeight="600"
+                        style={{ pointerEvents: "none" }}
                       >
                         {activeLayer === "waste" 
-                          ? `UL: ${state?.unexplained_kw || 0} kW`
+                          ? `UL: +${state?.unexplained_kw?.toFixed(2) || 0} kW`
                           : activeLayer === "occupancy"
                           ? `Occ: ${state?.occupancy || 0}`
-                          : `${state?.measured_kw || 0} kW`}
+                          : `${state?.measured_kw?.toFixed(2) || 0} kW`}
                       </text>
                     </g>
                   );
@@ -246,14 +299,14 @@ export const DigitalTwinView: React.FC<DigitalTwinProps> = ({
             </div>
           </div>
 
-          {/* Time Scrubber (Past History ↔ Future Forecast) */}
-          <div className="mt-4 pt-3 border-t border-slate-800 text-xs">
-            <div className="flex items-center justify-between text-slate-300 mb-1.5">
-              <span className="flex items-center gap-1.5 font-semibold">
-                <Clock className="w-3.5 h-3.5 text-cyan-400" />
+          {/* Time Scrubber */}
+          <div className={styles.timeScrubberBox}>
+            <div className={styles.scrubberHeader}>
+              <span style={{ display: "flex", alignItems: "center", gap: "6px", fontWeight: 600 }}>
+                <Clock size={14} color="#38bdf8" />
                 <span>Time-Travel Scrubber (Twin State Explorer)</span>
               </span>
-              <span className="font-mono text-cyan-400 font-bold">
+              <span style={{ fontFamily: "monospace", color: "#38bdf8", fontWeight: 700 }}>
                 {timeOffsetHours === 0 
                   ? "NOW (Live State)" 
                   : timeOffsetHours < 0 
@@ -262,8 +315,8 @@ export const DigitalTwinView: React.FC<DigitalTwinProps> = ({
               </span>
             </div>
 
-            <div className="flex items-center gap-3">
-              <span className="text-[10px] text-slate-500 font-mono">-24h</span>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <span style={{ fontSize: "10px", color: "#64748b", fontFamily: "monospace" }}>-24h</span>
               <input
                 type="range"
                 min="-24"
@@ -271,140 +324,151 @@ export const DigitalTwinView: React.FC<DigitalTwinProps> = ({
                 step="1"
                 value={timeOffsetHours}
                 onChange={(e) => setTimeOffsetHours(parseInt(e.target.value))}
-                className="w-full accent-cyan-500 bg-slate-800 h-1.5 rounded-lg cursor-pointer"
+                style={{ width: "100%", accentColor: "#0891b2", cursor: "pointer" }}
               />
-              <span className="text-[10px] text-slate-500 font-mono">+12h</span>
+              <span style={{ fontSize: "10px", color: "#64748b", fontFamily: "monospace" }}>+12h</span>
             </div>
-            <p className="text-[10px] text-slate-500 mt-1">
-              Drag scrubber to replay historical telemetry snapshots or simulate forward predictive states.
+            <p style={{ fontSize: "10px", color: "#64748b", marginTop: "4px" }}>
+              Replay historical snapshots or simulate forward predictive states.
             </p>
           </div>
         </div>
 
         {/* Right: Zone Detail Drawer */}
-        <div className="lg:col-span-4 glass-panel p-4 rounded-xl border border-slate-800 flex flex-col justify-between">
-          <div>
-            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+        <aside className={styles.detailDrawer}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+            <div className={styles.drawerHeader}>
               <div>
-                <span className="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-wider">
+                <span style={{ fontSize: "10px", fontFamily: "monospace", color: "#38bdf8", fontWeight: 700, textTransform: "uppercase" }}>
                   Zone Digital Twin
                 </span>
-                <h3 className="font-bold text-base text-slate-100">{selectedZone?.name}</h3>
-                <span className="text-xs text-slate-400">{selectedZone?.id} • {selectedZone?.type.toUpperCase()}</span>
+                <h3 style={{ fontSize: "16px", fontWeight: 700, color: "#ffffff", margin: "2px 0" }}>
+                  {selectedZone?.name}
+                </h3>
+                <span style={{ fontSize: "11px", color: "#94a3b8" }}>
+                  {selectedZone?.id} • {selectedZone?.type?.toUpperCase()}
+                </span>
               </div>
 
-              <span className={`px-2 py-1 rounded text-xs font-bold font-mono ${
-                selectedState && selectedState.unexplained_kw > 1
-                  ? "bg-rose-950 border border-rose-800 text-rose-400"
-                  : "bg-emerald-950 border border-emerald-800 text-emerald-400"
-              }`}>
+              <span style={{
+                padding: "3px 8px",
+                borderRadius: "6px",
+                fontSize: "11px",
+                fontWeight: 700,
+                fontFamily: "monospace",
+                background: selectedState && selectedState.unexplained_kw > 1 ? "rgba(244, 63, 94, 0.2)" : "rgba(16, 185, 129, 0.2)",
+                border: selectedState && selectedState.unexplained_kw > 1 ? "1px solid #f43f5e" : "1px solid #10b981",
+                color: selectedState && selectedState.unexplained_kw > 1 ? "#fb7185" : "#34d399",
+              }}>
                 {selectedState && selectedState.unexplained_kw > 1 ? "HIGH RESIDUAL" : "JUSTIFIED"}
               </span>
             </div>
 
             {/* Core Physics Metrics Grid */}
-            <div className="grid grid-cols-2 gap-2 mt-3 text-xs">
-              <div className="p-2.5 rounded bg-slate-900 border border-slate-800">
-                <span className="text-slate-400 text-[10px]">Occupancy (CV)</span>
-                <div className="text-base font-bold font-mono text-white mt-0.5">
+            <div className={styles.metricsGrid}>
+              <div className={styles.metricCard}>
+                <span style={{ color: "#94a3b8", fontSize: "10px" }}>Occupancy (CV)</span>
+                <div style={{ fontSize: "16px", fontWeight: 700, fontFamily: "monospace", color: "#ffffff", marginTop: "2px" }}>
                   {selectedState?.occupancy ?? 0} Occupants
                 </div>
-                <div className="text-[10px] text-slate-400">
+                <div style={{ fontSize: "10px", color: "#64748b" }}>
                   {selectedState?.vacant_seconds ? `Vacant ${(selectedState.vacant_seconds/60).toFixed(0)} min` : "Active"}
                 </div>
               </div>
 
-              <div className="p-2.5 rounded bg-slate-900 border border-slate-800">
-                <span className="text-slate-400 text-[10px]">Indoor Temperature</span>
-                <div className="text-base font-bold font-mono text-white mt-0.5">
-                  {selectedState?.temp_c ?? 23.5}°C
+              <div className={styles.metricCard}>
+                <span style={{ color: "#94a3b8", fontSize: "10px" }}>Indoor Temperature</span>
+                <div style={{ fontSize: "16px", fontWeight: 700, fontFamily: "monospace", color: "#ffffff", marginTop: "2px" }}>
+                  {selectedState?.temp_c?.toFixed(1) ?? "23.5"}°C
                 </div>
-                <div className="text-[10px] text-slate-400">
+                <div style={{ fontSize: "10px", color: "#64748b" }}>
                   Setpoint: {selectedState?.setpoint_c ?? 22}°C
                 </div>
               </div>
 
-              <div className="p-2.5 rounded bg-slate-900 border border-slate-800">
-                <span className="text-slate-400 text-[10px]">Measured Electrical</span>
-                <div className="text-base font-bold font-mono text-cyan-400 mt-0.5">
-                  {selectedState?.measured_kw ?? 0.5} kW
+              <div className={styles.metricCard}>
+                <span style={{ color: "#94a3b8", fontSize: "10px" }}>Measured Power</span>
+                <div style={{ fontSize: "16px", fontWeight: 700, fontFamily: "monospace", color: "#38bdf8", marginTop: "2px" }}>
+                  {selectedState?.measured_kw?.toFixed(2) ?? "0.50"} kW
                 </div>
-                <div className="text-[10px] text-slate-400">
-                  Expected: {selectedState?.expected_kw ?? 0.5} kW
+                <div style={{ fontSize: "10px", color: "#64748b" }}>
+                  Expected: {selectedState?.expected_kw?.toFixed(2) ?? "0.50"} kW
                 </div>
               </div>
 
-              <div className="p-2.5 rounded bg-rose-950/40 border border-rose-800/60">
-                <span className="text-rose-300 text-[10px]">Unexplained Load (UL)</span>
-                <div className="text-base font-bold font-mono text-rose-400 mt-0.5">
-                  +{selectedState?.unexplained_kw ?? 0} kW
+              <div className={styles.metricCardWaste}>
+                <span style={{ color: "#fb7185", fontSize: "10px" }}>Unexplained Load (UL)</span>
+                <div style={{ fontSize: "16px", fontWeight: 700, fontFamily: "monospace", color: "#f43f5e", marginTop: "2px" }}>
+                  +{selectedState?.unexplained_kw?.toFixed(2) ?? "0.00"} kW
                 </div>
-                <div className="text-[10px] text-rose-300/80">
+                <div style={{ fontSize: "10px", color: "#fda4af" }}>
                   Thermal residual waste
                 </div>
               </div>
             </div>
 
             {/* Thermal Parameters & Physics Model */}
-            <div className="mt-3 p-3 rounded-lg bg-slate-950 border border-slate-800/80 text-xs space-y-1.5">
-              <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block">
+            <div className={styles.passportBox}>
+              <span style={{ fontSize: "10px", fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.05em", display: "block" }}>
                 1R1C Thermal Parameters (Physics Passport)
               </span>
-              <div className="flex justify-between text-slate-400">
+              <div className={styles.passportRow}>
                 <span>Thermal Resistance (R):</span>
-                <span className="font-mono text-slate-200">{selectedZone?.thermal_R} K/kW</span>
+                <span style={{ fontFamily: "monospace", color: "#f1f5f9" }}>{selectedZone?.thermal_R} K/kW</span>
               </div>
-              <div className="flex justify-between text-slate-400">
+              <div className={styles.passportRow}>
                 <span>Thermal Capacity (C):</span>
-                <span className="font-mono text-slate-200">{selectedZone?.thermal_C} kWh/K</span>
+                <span style={{ fontFamily: "monospace", color: "#f1f5f9" }}>{selectedZone?.thermal_C} kWh/K</span>
               </div>
-              <div className="flex justify-between text-slate-400">
+              <div className={styles.passportRow}>
                 <span>Floor Area / Volume:</span>
-                <span className="font-mono text-slate-200">{selectedZone?.area_m2} m² / {selectedZone?.volume_m3} m³</span>
+                <span style={{ fontFamily: "monospace", color: "#f1f5f9" }}>{selectedZone?.area_m2} m² / {selectedZone?.volume_m3} m³</span>
               </div>
             </div>
 
             {/* Digital Equipment Passport Highlights */}
-            <div className="mt-3 p-3 rounded-lg bg-slate-900 border border-slate-800 text-xs">
-              <span className="text-[10px] font-semibold text-indigo-400 uppercase tracking-wider block mb-1">
+            <div className={styles.equipmentBox}>
+              <span style={{ fontSize: "10px", fontWeight: 700, color: "#a5b4fc", textTransform: "uppercase", letterSpacing: "0.05em", display: "block", marginBottom: "4px" }}>
                 Equipment Digital Passport
               </span>
-              {selectedZoneId === "B-204" ? (
-                <div className="text-slate-300 space-y-1">
-                  <div>Model: <strong>Voltas Cassette 2.0 Ton (Non-Inv)</strong></div>
-                  <div>Health Score: <span className="text-amber-400 font-bold">68/100 (Degraded)</span></div>
-                  <div>Measured COP: <span className="font-mono text-amber-400">2.32 (vs 2.65 rated)</span></div>
-                  <div className="text-emerald-400">Retrofit Payback: 2.28 years</div>
+              {selectedZone?.id === "B-204" ? (
+                <div style={{ color: "#cbd5e1", lineHeight: 1.6 }}>
+                  <div>Model: <strong style={{ color: "#ffffff" }}>Voltas Cassette 2.0 Ton (Non-Inv)</strong></div>
+                  <div>Health Score: <span style={{ color: "#f59e0b", fontWeight: 700 }}>68/100 (Degraded)</span></div>
+                  <div>Measured COP: <span style={{ fontFamily: "monospace", color: "#f59e0b" }}>2.32 (vs 2.65 rated)</span></div>
+                  <div style={{ color: "#34d399", fontSize: "11px" }}>Retrofit Payback: 2.28 years</div>
                 </div>
-              ) : selectedZoneId === "B-207" ? (
-                <div className="text-slate-300 space-y-1">
-                  <div>Model: <strong>Carrier Split 1.5 Ton (Old Unit)</strong></div>
-                  <div>Health Score: <span className="text-rose-400 font-bold">58/100 (Severe Wear)</span></div>
-                  <div>Measured COP: <span className="font-mono text-rose-400">1.95 (20.4% loss)</span></div>
-                  <div className="text-emerald-400">Retrofit Payback: 1.64 years</div>
+              ) : selectedZone?.id === "B-207" ? (
+                <div style={{ color: "#cbd5e1", lineHeight: 1.6 }}>
+                  <div>Model: <strong style={{ color: "#ffffff" }}>Carrier Split 1.5 Ton (Old Unit)</strong></div>
+                  <div>Health Score: <span style={{ color: "#f43f5e", fontWeight: 700 }}>58/100 (Severe Wear)</span></div>
+                  <div>Measured COP: <span style={{ fontFamily: "monospace", color: "#f43f5e" }}>1.95 (20.4% loss)</span></div>
+                  <div style={{ color: "#34d399", fontSize: "11px" }}>Retrofit Payback: 1.64 years</div>
                 </div>
               ) : (
-                <div className="text-slate-300 space-y-1">
-                  <div>Model: <strong>Daikin VRV Inverter Unit</strong></div>
-                  <div>Health Score: <span className="text-emerald-400 font-bold">94/100 (Nominal)</span></div>
-                  <div>Measured COP: <span className="font-mono text-emerald-400">3.40 (COP 3.6 rated)</span></div>
+                <div style={{ color: "#cbd5e1", lineHeight: 1.6 }}>
+                  <div>Model: <strong style={{ color: "#ffffff" }}>Daikin VRV Inverter Unit</strong></div>
+                  <div>Health Score: <span style={{ color: "#34d399", fontWeight: 700 }}>94/100 (Nominal)</span></div>
+                  <div>Measured COP: <span style={{ fontFamily: "monospace", color: "#34d399" }}>3.40 (COP 3.6 rated)</span></div>
                 </div>
               )}
             </div>
           </div>
 
           {/* Action button: Fork to Scenario */}
-          <div className="mt-4 pt-3 border-t border-slate-800">
+          <div style={{ paddingTop: "12px", borderTop: "1px solid rgba(255, 255, 255, 0.08)", marginTop: "12px" }}>
             <button
-              onClick={() => onForkScenario(selectedZoneId)}
-              className="w-full py-2 px-3 rounded-lg bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white font-semibold text-xs transition flex items-center justify-center gap-2 shadow-md shadow-indigo-600/30"
+              onClick={() => onForkScenario(selectedZone?.id || "B-204")}
+              className={styles.forkBtn}
             >
-              <Sliders className="w-3.5 h-3.5" />
-              <span>Fork Zone to What-If Simulator</span>
+              <Sliders size={14} />
+              <span>Fork {selectedZone?.id} to What-If Simulator</span>
             </button>
           </div>
-        </div>
+        </aside>
       </div>
     </div>
   );
 };
+
+export default DigitalTwinView;

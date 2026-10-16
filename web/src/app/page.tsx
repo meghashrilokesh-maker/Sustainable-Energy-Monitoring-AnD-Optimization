@@ -7,7 +7,24 @@ import { CommandCenterView } from "../components/CommandCenterView";
 import { LiveMonitorView } from "../components/LiveMonitorView";
 import { VisionMonitorView } from "../components/VisionMonitorView";
 import { DigitalTwinView } from "../components/DigitalTwinView";
-import { BuildingTwin3D } from "../components/BuildingTwin3D";
+import dynamic from "next/dynamic";
+import { Layers, Box } from "lucide-react";
+
+const BuildingTwin3D = dynamic(
+  () => import("../components/BuildingTwin3D").then((mod) => mod.BuildingTwin3D),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex items-center justify-center h-[560px] bg-[#070b13] border border-slate-800 rounded-2xl text-slate-400 text-sm">
+        <div className="flex items-center gap-2.5">
+          <div className="w-5 h-5 rounded-full border-2 border-cyan-400 border-t-transparent animate-spin" />
+          <span className="font-medium text-slate-300">Loading Block-B 3D Structural Digital Twin...</span>
+        </div>
+      </div>
+    )
+  }
+);
+
 import { AnalyticsForecastView } from "../components/AnalyticsForecastView";
 import { AnomalyCenterView } from "../components/AnomalyCenterView";
 import { WhatIfSimulatorView } from "../components/WhatIfSimulatorView";
@@ -15,7 +32,6 @@ import { AdvisorChatView } from "../components/AdvisorChatView";
 import { FloatingRobotAssistant } from "../components/FloatingRobotAssistant";
 import { OptimizationCenterView } from "../components/OptimizationCenterView";
 import { ExecutiveReportView } from "../components/ExecutiveReportView";
-import { Layers, Box } from "lucide-react";
 
 import { 
   fetchSiteSummary, 
