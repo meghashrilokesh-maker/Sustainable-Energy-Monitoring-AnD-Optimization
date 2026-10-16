@@ -7,10 +7,7 @@ import {
   ShieldCheck, 
   ChevronDown, 
   ChevronUp, 
-  Layers, 
-  Database, 
   CheckCircle2, 
-  HelpCircle,
   Cpu
 } from "lucide-react";
 import { askAdvisor } from "../lib/api";
@@ -38,6 +35,8 @@ export const AdvisorChatView: React.FC = () => {
   ]);
   const [inputQuery, setInputQuery] = useState("");
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [lastFailedQuery, setLastFailedQuery] = useState<string | null>(null);
   const [expandedTrace, setExpandedTrace] = useState<string | null>(null);
 
   const predefinedQuestions = [
@@ -48,17 +47,22 @@ export const AdvisorChatView: React.FC = () => {
     "Is the 10-year-old AC in B-207 worth replacing?"
   ];
 
-  const handleSend = async (queryText?: string) => {
-    const q = queryText || inputQuery;
-    if (!q.trim()) return;
+  const handleSend = async (queryText?: string, isRetry = false) => {
+    const q = (queryText !== undefined ? queryText : inputQuery).trim();
+    if (!q || loading) return;
 
-    const userMsg: ChatMessage = {
-      id: `u-${Date.now()}`,
-      sender: "user",
-      text: q
-    };
-    setMessages(prev => [...prev, userMsg]);
-    setInputQuery("");
+    setErrorMessage(null);
+
+    // If it's a new query (not a retry of the same query), add to message log
+    if (!isRetry) {
+      const userMsg: ChatMessage = {
+        id: `u-${Date.now()}`,
+        sender: "user",
+        text: q
+      };
+      setMessages(prev => [...prev, userMsg]);
+    }
+
     setLoading(true);
 
     try {
@@ -72,20 +76,26 @@ export const AdvisorChatView: React.FC = () => {
         verified: res.numeric_guard_verified
       };
       setMessages(prev => [...prev, advisorMsg]);
-    } catch (e) {
-      console.error(e);
-      setMessages(prev => [
-        ...prev,
-        {
-          id: `a-${Date.now()}`,
-          sender: "advisor",
-          text: "I experienced an error executing the twin tool call. Please verify backend connectivity.",
-          verified: false
-        }
-      ]);
+      // Only clear input query and failed query on SUCCESS
+      setInputQuery("");
+      setLastFailedQuery(null);
+    } catch (e: any) {
+      console.error("AI Advisor query error:", e);
+      const friendlyError = e?.message || "Failed to communicate with PulseGrid AI service.";
+      setErrorMessage(friendlyError);
+      setLastFailedQuery(q);
+      // Keep inputQuery intact so the user does not lose their typed message
+      if (!inputQuery && q) {
+        setInputQuery(q);
+      }
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    handleSend();
   };
 
   return (
@@ -94,7 +104,7 @@ export const AdvisorChatView: React.FC = () => {
       <div className="glass-panel p-4 rounded-xl border border-slate-800 flex flex-wrap items-center justify-between gap-3">
         <div>
           <h2 className="text-base font-bold text-slate-100 flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-indigo-400" />
+            <Sparkles className="w-5 h-5 text-cyan-400" />
             <span>AI Energy Advisor — Tool-Calling & Numeric Verification Guard</span>
           </h2>
           <p className="text-xs text-slate-400 mt-0.5">
@@ -117,8 +127,10 @@ export const AdvisorChatView: React.FC = () => {
           {predefinedQuestions.map((q, i) => (
             <button
               key={i}
+              type="button"
+              disabled={loading}
               onClick={() => handleSend(q)}
-              className="text-xs px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 hover:text-white transition flex items-center gap-1.5"
+              className="text-xs px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 disabled:opacity-50 border border-slate-800 text-slate-300 hover:text-white transition flex items-center gap-1.5 text-left"
             >
               <span>{q}</span>
             </button>
@@ -142,7 +154,7 @@ export const AdvisorChatView: React.FC = () => {
             >
               {msg.sender === "advisor" && (
                 <div className="flex items-center justify-between pb-2 mb-2 border-b border-slate-800 text-[11px]">
-                  <div className="flex items-center gap-1.5 text-indigo-400 font-bold">
+                  <div className="flex items-center gap-1.5 text-cyan-400 font-bold">
                     <Cpu className="w-3.5 h-3.5" />
                     <span>PulseGrid Advisor</span>
                   </div>
@@ -162,11 +174,19 @@ export const AdvisorChatView: React.FC = () => {
                 <div className="mt-3 pt-2 border-t border-slate-800/80">
                   <span className="text-[10px] text-slate-400 block mb-1">Data Sources & Citations:</span>
                   <div className="flex flex-wrap gap-1.5">
-                    {msg.citations.map((cite, i) => (
-                      <span key={i} className="text-[10px] px-2 py-0.5 rounded bg-slate-950 border border-slate-800 text-cyan-300 font-mono">
-                        {cite}
-                      </span>
-                    ))}
+                    {msg.citations.map((cite: any, i: number) => {
+                      const citeText =
+                        typeof cite === "string"
+                          ? cite
+                          : cite && typeof cite === "object" && cite.doc
+                          ? `${cite.doc}${cite.ref ? ` (${cite.ref})` : ""}`
+                          : JSON.stringify(cite);
+                      return (
+                        <span key={i} className="text-[10px] px-2 py-0.5 rounded bg-slate-950 border border-slate-800 text-cyan-300 font-mono">
+                          {citeText}
+                        </span>
+                      );
+                    })}
                   </div>
                 </div>
               )}
@@ -175,8 +195,9 @@ export const AdvisorChatView: React.FC = () => {
               {msg.toolTrace && msg.toolTrace.length > 0 && (
                 <div className="mt-2.5">
                   <button
+                    type="button"
                     onClick={() => setExpandedTrace(expandedTrace === msg.id ? null : msg.id)}
-                    className="text-[10px] text-indigo-300 hover:text-indigo-200 flex items-center gap-1"
+                    className="text-[10px] text-cyan-300 hover:text-cyan-200 flex items-center gap-1"
                   >
                     <span>{expandedTrace === msg.id ? "Hide Tool Execution Trace" : "How I Got This (Inspect Tool Calls)"}</span>
                     {expandedTrace === msg.id ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
@@ -200,31 +221,60 @@ export const AdvisorChatView: React.FC = () => {
 
         {loading && (
           <div className="flex items-center gap-2 text-xs text-slate-400 italic">
-            <Sparkles className="w-4 h-4 text-indigo-400 animate-spin" />
+            <Sparkles className="w-4 h-4 text-cyan-400 animate-spin" />
             <span>Querying twin physics and running forward simulation...</span>
+          </div>
+        )}
+
+        {/* Recoverable Error Message Banner with Retry */}
+        {errorMessage && (
+          <div className="p-3 rounded-xl bg-rose-950/40 border border-rose-800/70 text-rose-200 text-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-lg">
+            <div className="flex items-start gap-2">
+              <span className="text-base leading-none">⚠️</span>
+              <div>
+                <strong className="font-semibold block text-rose-300">AI Service Communication Error</strong>
+                <span className="text-slate-300 text-[11px] leading-relaxed block mt-0.5">{errorMessage}</span>
+              </div>
+            </div>
+            {lastFailedQuery && (
+              <button
+                type="button"
+                onClick={() => handleSend(lastFailedQuery, true)}
+                disabled={loading}
+                className="shrink-0 px-3 py-1.5 rounded-lg bg-rose-800 hover:bg-rose-700 disabled:opacity-50 text-white font-medium text-xs transition flex items-center gap-1.5 shadow"
+              >
+                <span>↻ Retry Query</span>
+              </button>
+            )}
           </div>
         )}
       </div>
 
-      {/* Input Field */}
-      <div className="flex items-center gap-2">
+      {/* Input Field wrapped in Form to prevent default page reload */}
+      <form onSubmit={handleFormSubmit} className="flex items-center gap-2">
         <input
           type="text"
           value={inputQuery}
           onChange={(e) => setInputQuery(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleSend()}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+              e.preventDefault();
+              handleSend();
+            }
+          }}
+          disabled={loading}
           placeholder="Ask anything about campus energy, anomalies, or test a what-if scenario..."
-          className="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500 font-sans"
+          className="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500 font-sans disabled:opacity-60"
         />
         <button
-          onClick={() => handleSend()}
+          type="submit"
           disabled={loading || !inputQuery.trim()}
           className="px-4 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 disabled:opacity-50 text-white font-semibold text-xs transition flex items-center gap-1.5 shadow-md shadow-cyan-600/30"
         >
           <Send className="w-3.5 h-3.5" />
           <span>Send</span>
         </button>
-      </div>
+      </form>
     </div>
   );
 };

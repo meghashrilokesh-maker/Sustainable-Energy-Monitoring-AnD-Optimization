@@ -14,6 +14,7 @@ from backend.app.services.optimizer import optimizer_service
 from backend.app.services.forecast import forecast_service
 from backend.app.services.cv_service import cv_service
 from backend.app.services.genai_service import genai_service
+from backend.app.services.uci_simulator import uci_simulator_service
 
 app = FastAPI(
     title="PulseGrid Digital Twin API",
@@ -59,11 +60,45 @@ class FaultToggleRequest(BaseModel):
     fault_id: str
     active: bool
 
+class UCIControlRequest(BaseModel):
+    action: str  # start, pause, resume, reset, speed, scrub
+    speed: Optional[float] = 1.0
+    index: Optional[int] = 0
+
 # ----------------- Endpoints -----------------
 
 @app.get("/api/health")
 def health_check():
     return {"status": "ok", "service": "PulseGrid Digital Twin", "timestamp": datetime.now(timezone.utc).isoformat()}
+
+# UCI Dataset Simulator Endpoints
+@app.post("/api/uci/control")
+def control_uci_simulation(req: UCIControlRequest):
+    if req.action == "start":
+        uci_simulator_service.start()
+    elif req.action == "pause":
+        uci_simulator_service.pause()
+    elif req.action == "resume":
+        uci_simulator_service.resume()
+    elif req.action == "reset":
+        uci_simulator_service.reset()
+    elif req.action == "speed" and req.speed is not None:
+        uci_simulator_service.set_speed(req.speed)
+    elif req.action == "scrub" and req.index is not None:
+        uci_simulator_service.scrub_to(req.index)
+    return {"status": "ok", "state": uci_simulator_service.tick(0)}
+
+@app.get("/api/uci/tick")
+def get_uci_tick(step: int = 1):
+    return uci_simulator_service.tick(step)
+
+@app.get("/api/uci/state")
+def get_uci_state():
+    return uci_simulator_service.tick(0)
+
+@app.get("/api/uci/forecast")
+def get_uci_forecast():
+    return uci_simulator_service.get_forecast()
 
 @app.get("/api/site/summary")
 def get_site_summary():

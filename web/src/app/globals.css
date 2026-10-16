@@ -55,3 +55,118 @@ body {
   border: 1px solid rgba(56, 189, 248, 0.2);
   box-shadow: 0 0 25px rgba(56, 189, 248, 0.08);
 }
+
+/* Robot Assistant Animations */
+@keyframes botFloat {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes eyeBlink {
+  0%, 92%, 100% {
+    transform: scaleY(1);
+  }
+  96% {
+    transform: scaleY(0.1);
+  }
+}
+
+@keyframes antennaPulse {
+  0%, 100% {
+    opacity: 0.7;
+    filter: drop-shadow(0 0 4px #06b6d4);
+  }
+  50% {
+    opacity: 1;
+    filter: drop-shadow(0 0 10px #22d3ee);
+  }
+}
+
+/* Cute Purple Robot Animations */
+@keyframes cuteRobotJump {
+  0%, 100% {
+    transform: translateY(0px) scale(1, 1);
+  }
+  15% {
+    transform: translateY(3px) scale(1.08, 0.92);
+  }
+  38% {
+    transform: translateY(-22px) scale(0.92, 1.08);
+  }
+  50% {
+    transform: translateY(-26px) scale(1, 1);
+  }
+  68% {
+    transform: translateY(-6px) scale(0.96, 1.04);
+  }
+  80% {
+    transform: translateY(2px) scale(1.06, 0.94);
+  }
+  90% {
+    transform: translateY(-3px) scale(0.99, 1.01);
+  }
+}
+
+@keyframes purpleCoreGlow {
+  0%, 100% {
+    opacity: 0.75;
+    filter: drop-shadow(0 0 3px #a855f7);
+  }
+  50% {
+    opacity: 1;
+    filter: drop-shadow(0 0 10px #c084fc);
+  }
+}
+
+@keyframes cuteEyeBlink {
+  0%, 90%, 100% {
+    transform: scaleY(1);
+  }
+  95% {
+    transform: scaleY(0.12);
+  }
+}
+
+.animate-cute-jump {
+  animation: cuteRobotJump 2.8s cubic-bezier(0.28, 0.84, 0.42, 1) infinite;
+  transform-origin: bottom center;
+}
+
+.animate-purple-core {
+  animation: purpleCoreGlow 2.2s ease-in-out infinite;
+}
+
+.animate-cute-blink {
+  transform-origin: center;
+  animation: cuteEyeBlink 3.6s ease-in-out infinite;
+}
+
+.animate-bot-float {
+  animation: botFloat 3.2s ease-in-out infinite;
+}
+
+.animate-eye-blink {
+  transform-origin: center;
+  animation: eyeBlink 4s ease-in-out infinite;
+}
+
+.animate-antenna-pulse {
+  animation: antennaPulse 2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-cute-jump,
+  .animate-purple-core,
+  .animate-cute-blink,
+  .animate-bot-float,
+  .animate-eye-blink,
+  .animate-antenna-pulse {
+    animation: none !important;
+    transform: none !important;
+  }
+}
+

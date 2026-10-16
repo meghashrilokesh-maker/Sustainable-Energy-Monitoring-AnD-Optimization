@@ -12,6 +12,7 @@ import { AnalyticsForecastView } from "../components/AnalyticsForecastView";
 import { AnomalyCenterView } from "../components/AnomalyCenterView";
 import { WhatIfSimulatorView } from "../components/WhatIfSimulatorView";
 import { AdvisorChatView } from "../components/AdvisorChatView";
+import { FloatingRobotAssistant } from "../components/FloatingRobotAssistant";
 import { OptimizationCenterView } from "../components/OptimizationCenterView";
 import { ExecutiveReportView } from "../components/ExecutiveReportView";
 import { Layers, Box } from "lucide-react";
@@ -28,6 +29,7 @@ import { SiteSummary, ZoneMetadata, ZoneState, Anomaly } from "../lib/types";
 
 export default function PulseGridApp() {
   const [activeTab, setActiveTab] = useState<string>("command");
+  const [isAdvisorOpen, setIsAdvisorOpen] = useState<boolean>(false);
   const [isDemoDrawerOpen, setIsDemoDrawerOpen] = useState<boolean>(false);
   const [twinMode, setTwinMode] = useState<"2d" | "3d">("3d");
 
@@ -96,9 +98,9 @@ export default function PulseGridApp() {
 
   return (
     <div className="min-h-screen bg-[#070b12] text-slate-100 flex flex-col font-sans">
-      {/* Toast Notification */}
+      {/* Toast Notification positioned away from bottom-right robot */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 px-4 py-2.5 rounded-xl bg-cyan-600 border border-cyan-400 text-white font-medium text-xs shadow-2xl flex items-center gap-2 animate-bounce">
+        <div className="fixed top-20 right-6 z-50 px-4 py-2.5 rounded-xl bg-cyan-600 border border-cyan-400 text-white font-medium text-xs shadow-2xl flex items-center gap-2 animate-bounce">
           <span>{toastMessage}</span>
         </div>
       )}
@@ -107,6 +109,8 @@ export default function PulseGridApp() {
       <Navbar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
+        onOpenAdvisor={() => setIsAdvisorOpen(prev => !prev)}
+        isAdvisorOpen={isAdvisorOpen}
         openDemoController={() => setIsDemoDrawerOpen(true)}
         siteTotals={siteSummary?.live_totals}
       />
@@ -119,7 +123,13 @@ export default function PulseGridApp() {
             historyData={historyData}
             anomalies={anomalies}
             briefing={morningBriefing}
-            onNavigateTab={setActiveTab}
+            onNavigateTab={(tab) => {
+              if (tab === "advisor") {
+                setIsAdvisorOpen(true);
+              } else {
+                setActiveTab(tab);
+              }
+            }}
             onApplyAction={handleApplyAction}
           />
         )}
@@ -204,13 +214,9 @@ export default function PulseGridApp() {
         {activeTab === "simulator" && (
           <WhatIfSimulatorView
             onAskAI={(q) => {
-              setActiveTab("advisor");
+              setIsAdvisorOpen(true);
             }}
           />
-        )}
-
-        {activeTab === "advisor" && (
-          <AdvisorChatView />
         )}
 
         {activeTab === "optimization" && (
@@ -223,6 +229,13 @@ export default function PulseGridApp() {
           <ExecutiveReportView />
         )}
       </main>
+
+      {/* Floating Animated Robot Assistant & Slide-out Advisor Panel */}
+      <FloatingRobotAssistant
+        isOpen={isAdvisorOpen}
+        onToggle={() => setIsAdvisorOpen(prev => !prev)}
+        onClose={() => setIsAdvisorOpen(false)}
+      />
 
       {/* Demo Controller Floating Drawer */}
       <DemoControllerDrawer

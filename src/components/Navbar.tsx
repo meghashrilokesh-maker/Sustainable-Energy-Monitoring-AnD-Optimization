@@ -20,6 +20,8 @@ interface NavbarProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
   openDemoController: () => void;
+  onOpenAdvisor?: () => void;
+  isAdvisorOpen?: boolean;
   siteTotals?: {
     measured_kw: number;
     expected_kw: number;
@@ -33,6 +35,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   activeTab,
   setActiveTab,
   openDemoController,
+  onOpenAdvisor,
+  isAdvisorOpen,
   siteTotals
 }) => {
   const tabs = [
@@ -43,7 +47,6 @@ export const Navbar: React.FC<NavbarProps> = ({
     { id: "analytics", label: "Analytics & Forecast", icon: TrendingUp },
     { id: "anomalies", label: "Anomaly Center", icon: AlertTriangle },
     { id: "simulator", label: "What-If Simulator", icon: Sliders },
-    { id: "advisor", label: "AI Advisor", icon: Sparkles },
     { id: "optimization", label: "Optimization Center", icon: Award },
     { id: "reports", label: "Reports", icon: FileText }
   ];
@@ -107,6 +110,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           {tabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
+
             return (
               <button
                 key={tab.id}
