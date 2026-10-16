@@ -262,3 +262,45 @@ export interface RankedAction {
   score: number;
   score_pct: number;
 }
+
+export interface UCIRecord {
+  index?: number;
+  date: string;
+  appWh: number;
+  lgtWh: number;
+  totalWh?: number;
+  appKw: number;
+  lgtKw: number;
+  totalKw: number;
+  t: number[];
+  rh: number[];
+  tOut: number;
+  press: number;
+  rhOut: number;
+  wind: number;
+  vis: number;
+  tdew: number;
+}
+
+export interface SimulationState {
+  currentIndex: number;
+  totalRecords: number;
+  isPlaying: boolean;
+  speed: number;
+  currentRecord: UCIRecord | null;
+  cumKwh: number;
+  cumCostInr: number;
+  cumCo2Kg: number;
+  peakKw: number;
+  unexplainedKw: number;
+  efficiencyScore: number;
+  history: Array<{
+    time: string;
+    measured_kw: number;
+    expected_kw: number;
+    unexplained_kw: number;
+    outdoor_temp_c: number;
+  }>;
+}
+
+
