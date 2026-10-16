@@ -118,6 +118,25 @@ export const WhatIfSimulatorView: React.FC<SimulatorProps> = ({ onAskAI }) => {
     deltas: { kwh_delta_pct: -24.2, cost_saved_month_inr: 114240, co2_saved_tons: 11.0, peak_delta_kw: -50, comfort_delta_pct: -2.0 }
   };
 
+  const dynamicOutcome = React.useMemo(() => {
+    // Model-driven calculation based on current sliders
+    const standbyDelta = autoPcOff ? 0.08 : 0.0;
+    const setpointDelta = Math.max(0, (setpoint - 22.0) * 0.035);
+    const lightDelta = smartLighting ? 0.05 : 0.0;
+    const solarDelta = (solarKwp / 80.0) * 0.18;
+    const totalSavingPct = Math.round(Math.min(48.0, (standbyDelta + setpointDelta + lightDelta + solarDelta) * 100) * 10) / 10;
+    const baseMonthlyKwh = 55500;
+    const savedMonthlyKwh = Math.round(baseMonthlyKwh * (totalSavingPct / 100));
+    const savedMonthlyInr = Math.round(savedMonthlyKwh * 8.5);
+    const savedCo2Tons = Math.round((savedMonthlyKwh * 0.82 / 1000) * 10) / 10;
+    return {
+      totalSavingPct,
+      savedMonthlyKwh,
+      savedMonthlyInr,
+      savedCo2Tons
+    };
+  }, [setpoint, occupancyHvac, smartLighting, autoPcOff, solarKwp, inverterUpgrade, peakShaving]);
+
   return (
     <div className="space-y-4 p-4 max-w-7xl mx-auto">
       {/* Header */}
@@ -221,6 +240,19 @@ export const WhatIfSimulatorView: React.FC<SimulatorProps> = ({ onAskAI }) => {
             >
               {autoPcOff ? "ENABLED" : "OFF"}
             </button>
+          </div>
+        </div>
+
+        {/* Dynamic Model Outcome Indicator */}
+        <div className="mt-3 p-3 rounded-lg bg-cyan-950/40 border border-cyan-500/40 flex flex-wrap items-center justify-between gap-3 text-xs">
+          <div className="flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-cyan-400" />
+            <span className="font-semibold text-slate-200">Current Parameter Scenario Projection (Empirical Model):</span>
+          </div>
+          <div className="flex items-center gap-4 font-mono">
+            <div>Total Saved: <strong className="text-emerald-400">−{dynamicOutcome.totalSavingPct}% ({dynamicOutcome.savedMonthlyKwh.toLocaleString()} kWh/mo)</strong></div>
+            <div>Cost Saved: <strong className="text-cyan-300">₹{dynamicOutcome.savedMonthlyInr.toLocaleString()}/mo</strong></div>
+            <div>CO₂ Abated: <strong className="text-indigo-300">{dynamicOutcome.savedCo2Tons} tons/mo</strong></div>
           </div>
         </div>
       </div>

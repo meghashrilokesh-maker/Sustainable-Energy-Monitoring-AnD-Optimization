@@ -74,7 +74,7 @@ export const ExecutiveReportView: React.FC = () => {
               Campus Energy & Sustainability Audit Report
             </h1>
             <p className="text-xs text-slate-400 mt-0.5">
-              Site: Aryabhatta Engineering Campus (Block A & Block B) • Generated: October 2026
+              Site: Aryabhatta Digital Twin • Telemetry: Simulated Live — UCI Dataset (Candanedo et al., 2017)
             </p>
           </div>
 
